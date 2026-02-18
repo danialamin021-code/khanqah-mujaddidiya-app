@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Lora } from "next/font/google";
+import { Toaster } from "sonner";
 import AppNav from "@/components/AppNav";
 import SupabaseConfigBanner from "@/components/SupabaseConfigBanner";
+import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -23,9 +25,15 @@ const lora = Lora({
 export const metadata: Metadata = {
   title: "Khanqah Mujaddidiyya",
   description: "A calm, guided spiritual learning companion.",
+  manifest: "/manifest.json",
   icons: {
     icon: "/assets/app-icon/app-icon.png",
     apple: "/assets/app-icon/app-icon.png",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Khanqah",
   },
 };
 
@@ -39,6 +47,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${lora.variable} antialiased`}
       >
+        <Toaster richColors position="top-center" closeButton />
+        <ServiceWorkerRegistration />
         <SupabaseConfigBanner />
         <AppNav />
         {/* Top bar: pt-14; bottom nav always (mobile-first): pb-16 */}

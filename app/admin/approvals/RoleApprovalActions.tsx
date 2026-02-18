@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { toast } from "sonner";
 import { approveRoleRequest, rejectRoleRequest } from "@/app/actions/role-approvals";
 import { useRouter } from "next/navigation";
 
@@ -19,7 +20,7 @@ export default function RoleApprovalActions({
     startTransition(async () => {
       const result = await approveRoleRequest(userId, grantRole);
       if (result.success) router.refresh();
-      else alert(result.error);
+      else toast.error(result.error);
     });
   }
 
@@ -27,7 +28,7 @@ export default function RoleApprovalActions({
     startTransition(async () => {
       const result = await rejectRoleRequest(userId);
       if (result.success) router.refresh();
-      else alert(result.error);
+      else toast.error(result.error);
     });
   }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import { useRealtimeModule } from "@/lib/hooks/use-realtime-module";
 import { useUser } from "@/lib/hooks/use-user";
 import { createModuleSession, deleteModuleSession } from "@/lib/actions/module-sessions";
@@ -42,7 +43,7 @@ export default function SessionsList({
     startTransition(async () => {
       const res = await createModuleSession(moduleId, { date, time, topic, zoom_link: zoomLink });
       if (res?.error) {
-        alert(res.error);
+        toast.error(res.error);
         return;
       }
       form.reset();
@@ -53,7 +54,7 @@ export default function SessionsList({
     if (!deleteSession) return;
     const res = await deleteModuleSession(deleteSession.id);
     if (res?.error) {
-      alert(res.error);
+      toast.error(res.error);
       throw new Error(res.error);
     }
     setDeleteSession(null);

@@ -5,12 +5,20 @@ import { createClient } from "@/lib/supabase/server";
 import { getCurrentRole } from "@/lib/auth";
 import { logActivity } from "@/lib/utils/activity-logger";
 
+export interface EnrollMetadata {
+  fullName: string;
+  whatsapp: string;
+  country?: string;
+  city?: string;
+}
+
 /**
  * Enroll the current user in a module.
  * Handles duplicate enrollment gracefully (returns success if already enrolled).
  */
 export async function enrollInModule(
-  moduleId: string
+  moduleId: string,
+  metadata?: EnrollMetadata
 ): Promise<{ success: boolean; error?: string; alreadyEnrolled?: boolean }> {
   const supabase = await createClient();
   if (!supabase) return { success: false, error: "Not configured" };
@@ -35,6 +43,10 @@ export async function enrollInModule(
       module_id: moduleId,
       user_id: user.id,
       status: "active",
+      full_name: metadata?.fullName?.trim() || null,
+      whatsapp: metadata?.whatsapp?.trim() || null,
+      country: metadata?.country?.trim() || null,
+      city: metadata?.city?.trim() || null,
     })
     .select("id")
     .single();

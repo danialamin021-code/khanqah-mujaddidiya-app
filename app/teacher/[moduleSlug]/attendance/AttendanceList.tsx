@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { markAttendance } from "@/lib/actions/module-attendance";
 import { useTransition } from "react";
 
@@ -47,7 +48,7 @@ export default function AttendanceList({
     const next = current === "present" ? "absent" : "present";
     startTransition(async () => {
       const res = await markAttendance(sessionId, userId, next as "present" | "absent");
-      if (res?.error) alert(res.error);
+      if (res?.error) toast.error(res.error);
       else router.refresh();
     });
   }

@@ -68,9 +68,10 @@ export const MENU_STUDENT: NavItem[] = [
   { href: "/settings", label: "Settings", Icon: Settings },
 ];
 
-/** Teacher hamburger items (in addition to student). */
+/** Teacher hamburger items (exclusive when activeRole = teacher). */
 export const MENU_TEACHER: NavItem[] = [
   { href: "/teacher", label: "Teacher Dashboard", Icon: LayoutDashboard },
+  { href: "/dashboard", label: "My Progress", Icon: BarChart3 },
   { href: "/teacher/sessions", label: "Sessions", Icon: Calendar },
   { href: "/teacher/students", label: "Students", Icon: Users },
   { href: "/teacher/attendance", label: "Attendance", Icon: ClipboardCheck },
@@ -78,7 +79,7 @@ export const MENU_TEACHER: NavItem[] = [
   { href: "/teacher/announcements", label: "Announcements", Icon: Megaphone },
 ];
 
-/** Admin hamburger items. */
+/** Admin hamburger items (exclusive when activeRole = admin). */
 export const MENU_ADMIN: NavItem[] = [
   { href: "/admin", label: "Dashboard", Icon: LayoutDashboard },
   { href: "/admin/users", label: "Users", Icon: UserCog },

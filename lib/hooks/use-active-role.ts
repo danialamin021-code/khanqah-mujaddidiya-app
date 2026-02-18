@@ -23,68 +23,68 @@ function setStoredActiveRole(role: ActiveRole) {
   document.cookie = `${COOKIE_KEY}=${role};path=/;max-age=31536000`;
 }
 
+/** Map DB roles to UI roles (director → admin). */
+function toActiveRoles(roles: Role[]): ActiveRole[] {
+  const set = new Set<ActiveRole>();
+  for (const r of roles) {
+    if (r === "student") set.add("student");
+    if (r === "teacher") set.add("teacher");
+    if (r === "admin" || r === "director") set.add("admin");
+  }
+  return Array.from(set);
+}
+
 /**
  * Returns the active role for UI rendering.
  * - Single role: activeRole = that role.
- * - Hybrid (Teacher + Admin or Teacher + Director): activeRole from localStorage, default to admin.
- * - Only shown for switchable users (Teacher + Admin).
+ * - Multiple roles: activeRole from localStorage/cookie, default to highest (admin > teacher > student).
+ * - Role switcher shown for all users with 2+ roles.
  */
 export function useActiveRole(): {
   activeRole: ActiveRole;
   setActiveRole: (role: ActiveRole) => void;
   roles: Role[];
-  isHybrid: boolean;
+  /** User has 2+ switchable roles (student, teacher, admin). */
+  hasMultipleRoles: boolean;
+  /** Available roles for switcher (director = admin). */
+  availableRoles: ActiveRole[];
   loading: boolean;
 } {
   const { roles, loading } = useRoles();
   const [activeRole, setActiveRoleState] = useState<ActiveRole>("student");
 
-  const isHybrid =
-    (roles.includes("teacher") && (roles.includes("admin") || roles.includes("director")));
+  const availableRoles = toActiveRoles(roles);
+  const hasMultipleRoles = availableRoles.length > 1;
 
   const effectiveRole = useCallback((): ActiveRole => {
     if (roles.length === 0) return "student";
-    if (roles.includes("student") && !roles.includes("teacher") && !roles.includes("admin") && !roles.includes("director")) {
-      return "student";
-    }
-    if (roles.includes("teacher") && !roles.includes("admin") && !roles.includes("director")) {
-      return "teacher";
-    }
-    if ((roles.includes("admin") || roles.includes("director")) && !roles.includes("teacher")) {
-      return "admin";
-    }
-    if (isHybrid) {
+    if (availableRoles.length === 1) return availableRoles[0];
+    if (hasMultipleRoles) {
       const stored = getStoredActiveRole();
-      if (stored === "teacher" || stored === "admin") return stored;
-      return "admin";
+      if (stored && availableRoles.includes(stored)) return stored;
+      return availableRoles.includes("admin") ? "admin" : availableRoles.includes("teacher") ? "teacher" : "student";
     }
-    if (roles.includes("admin") || roles.includes("director")) return "admin";
-    if (roles.includes("teacher")) return "teacher";
     return "student";
-  }, [roles, isHybrid]);
+  }, [roles, availableRoles, hasMultipleRoles]);
 
   useEffect(() => {
     if (loading) return;
-    setActiveRoleState(effectiveRole());
-  }, [loading, effectiveRole]);
+    const next = effectiveRole();
+    setActiveRoleState(next);
+    if (hasMultipleRoles) setStoredActiveRole(next);
+  }, [loading, effectiveRole, hasMultipleRoles]);
 
   const setActiveRole = useCallback((role: ActiveRole) => {
     setStoredActiveRole(role);
     setActiveRoleState(role);
   }, []);
 
-  // Sync cookie on mount for hybrid users (so server can read it)
-  useEffect(() => {
-    if (isHybrid && !loading) {
-      setStoredActiveRole(activeRole);
-    }
-  }, [isHybrid, loading, activeRole]);
-
   return {
     activeRole,
     setActiveRole,
     roles,
-    isHybrid,
+    hasMultipleRoles,
+    availableRoles,
     loading,
   };
 }

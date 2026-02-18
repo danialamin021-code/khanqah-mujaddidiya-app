@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { enrollInModule } from "@/app/actions/module-enrollment";
+import { enrollFormSchema } from "@/lib/validations/enroll";
 
 const NIYAH_TEXT =
   "I sincerely intend to seek knowledge with full dedication, commitment, and reflection, solely to attain closeness to Allah.";
@@ -36,9 +37,35 @@ export default function EnrollModal({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+
+    const parsed = enrollFormSchema.safeParse({
+      fullName,
+      whatsapp: whatsApp,
+      country,
+      city,
+      niyahChecked,
+    });
+    if (!parsed.success) {
+      const first = parsed.error.flatten().fieldErrors;
+      const msg =
+        first.fullName?.[0] ??
+        first.whatsapp?.[0] ??
+        first.country?.[0] ??
+        first.city?.[0] ??
+        first.niyahChecked?.[0] ??
+        "Please fix the form errors.";
+      setError(msg);
+      return;
+    }
+
     setLoading(true);
     try {
-      const result = await enrollInModule(moduleId);
+      const result = await enrollInModule(moduleId, {
+        fullName: parsed.data.fullName,
+        whatsapp: parsed.data.whatsapp,
+        country: parsed.data.country,
+        city: parsed.data.city,
+      });
       if (result.success) {
         setSubmitted(true);
         onSuccess?.();

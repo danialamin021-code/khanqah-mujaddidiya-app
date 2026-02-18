@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "sonner";
 import { useRealtimeModule } from "@/lib/hooks/use-realtime-module";
 import { useUser } from "@/lib/hooks/use-user";
 import { createModuleAnnouncement } from "@/lib/actions/module-announcements";
@@ -33,7 +34,7 @@ export default function AnnouncementsList({
     startTransition(async () => {
       const res = await createModuleAnnouncement(moduleId, { title, content });
       if (res?.error) {
-        alert(res.error);
+        toast.error(res.error);
         return;
       }
       form.reset();

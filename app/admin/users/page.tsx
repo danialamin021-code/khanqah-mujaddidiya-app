@@ -62,7 +62,6 @@ export default async function AdminUsersPage({
             userId={userToEdit.id}
             userName={userToEdit.full_name ?? userToEdit.email ?? "User"}
             currentRoles={(userToEdit.roles ?? []) as Role[]}
-            onCancel={() => {}}
             canAssignAdmin={canAssign}
             canAssignTeacher={canAssignTeacher}
           />

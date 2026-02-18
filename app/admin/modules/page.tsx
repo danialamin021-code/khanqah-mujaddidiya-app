@@ -37,13 +37,11 @@ export default async function AdminModulesPage({ searchParams }: PageProps) {
         <div className="mt-6 rounded-2xl border border-green-soft bg-light-green/30 p-6">
           {params.new ? (
             <ModuleCreateForm
-              onCancel={() => {}}
               existingSlugs={modules.map((m) => m.slug)}
             />
           ) : moduleToEdit ? (
             <ModuleEditForm
               module={moduleToEdit}
-              onCancel={() => {}}
               existingSlugs={modules.filter((m) => m.id !== moduleToEdit.id).map((m) => m.slug)}
             />
           ) : null}

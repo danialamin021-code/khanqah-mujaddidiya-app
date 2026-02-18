@@ -2,16 +2,15 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { updateModule } from "@/lib/actions/modules";
 import type { ModuleRow } from "@/lib/data/modules";
 
 export default function ModuleEditForm({
   module,
-  onCancel,
   existingSlugs,
 }: {
   module: ModuleRow;
-  onCancel: () => void;
   existingSlugs: string[];
 }) {
   const [pending, startTransition] = useTransition();
@@ -22,14 +21,14 @@ export default function ModuleEditForm({
     const form = e.currentTarget;
     const slug = (form.elements.namedItem("slug") as HTMLInputElement)?.value?.trim();
     if (slug && existingSlugs.includes(slug)) {
-      alert("A module with this slug already exists.");
+      toast.error("A module with this slug already exists.");
       return;
     }
     startTransition(async () => {
       const fd = new FormData(form);
       const res = await updateModule(module.id, fd);
       if (res?.error) {
-        alert(res.error);
+        toast.error(res.error);
         return;
       }
       router.push("/admin/modules");

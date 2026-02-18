@@ -1,6 +1,9 @@
-const PLACEHOLDER_PHONE = "+1234567890";
-const PLACEHOLDER_EMAIL = "contact@example.com";
-const PLACEHOLDER_WHATSAPP = "https://wa.me/1234567890";
+import { CONTACT } from "@/lib/constants/contact";
+
+const isPlaceholder =
+  CONTACT.phone === "+1234567890" &&
+  CONTACT.email === "contact@example.com" &&
+  CONTACT.whatsapp === "https://wa.me/1234567890";
 
 export default function ContactPage() {
   return (
@@ -15,7 +18,7 @@ export default function ContactPage() {
 
         <div className="mt-10 space-y-4 stagger">
           <a
-            href={PLACEHOLDER_WHATSAPP}
+            href={CONTACT.whatsapp}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-4 rounded-2xl border border-green-soft bg-light-green/50 p-5 shadow-sm transition-colors duration-200 hover:bg-light-green"
@@ -30,7 +33,7 @@ export default function ContactPage() {
           </a>
 
           <a
-            href={`tel:${PLACEHOLDER_PHONE}`}
+            href={`tel:${CONTACT.phone}`}
             className="flex items-center gap-4 rounded-2xl border border-green-soft bg-light-green/50 p-5 shadow-sm transition-colors duration-200 hover:bg-light-green"
           >
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-light-green text-lg font-medium text-deep-green">
@@ -43,7 +46,7 @@ export default function ContactPage() {
           </a>
 
           <a
-            href={`mailto:${PLACEHOLDER_EMAIL}`}
+            href={`mailto:${CONTACT.email}`}
             className="flex items-center gap-4 rounded-2xl border border-green-soft bg-light-green/50 p-5 shadow-sm transition-colors duration-200 hover:bg-light-green"
           >
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-light-green text-lg font-medium text-deep-green">
@@ -51,14 +54,16 @@ export default function ContactPage() {
             </span>
             <div>
               <span className="font-medium text-deep-green">Email</span>
-              <p className="mt-0.5 text-sm text-foreground/70">{PLACEHOLDER_EMAIL}</p>
+              <p className="mt-0.5 text-sm text-foreground/70">{CONTACT.email}</p>
             </div>
           </a>
         </div>
 
-        <p className="mt-8 text-sm text-foreground/60">
-          Replace the placeholder values in the code with your real contact details when ready.
-        </p>
+        {isPlaceholder && (
+          <p className="mt-8 text-sm text-foreground/60">
+            Set NEXT_PUBLIC_CONTACT_PHONE, NEXT_PUBLIC_CONTACT_EMAIL, and NEXT_PUBLIC_CONTACT_WHATSAPP in .env.local for your real contact details.
+          </p>
+        )}
       </div>
     </main>
   );

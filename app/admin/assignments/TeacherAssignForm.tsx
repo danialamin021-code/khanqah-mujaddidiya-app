@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { assignTeacher } from "@/lib/actions/module-teachers";
 import type { ModuleRow } from "@/lib/data/modules";
 
@@ -30,7 +31,7 @@ export default function TeacherAssignForm({
       if (!module) return;
       const res = await assignTeacher(module.id, userId);
       if (res?.error) {
-        alert(res.error);
+        toast.error(res.error);
         return;
       }
       router.refresh();

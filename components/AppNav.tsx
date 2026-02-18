@@ -46,7 +46,7 @@ function BottomNavLink({
 function AppNavInner() {
   const pathname = usePathname();
   const { user, loading } = useUser();
-  const { activeRole, setActiveRole, isHybrid } = useActiveRole();
+  const { activeRole, setActiveRole, hasMultipleRoles, availableRoles } = useActiveRole();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const profileHref = loading ? "/profile" : user ? "/profile" : "/login";
@@ -83,9 +83,10 @@ function AppNavInner() {
             </Link>
           </div>
           <div className="flex items-center gap-3">
-            {isHybrid && user && (
+            {hasMultipleRoles && user && (
               <RoleSwitcher
                 activeRole={activeRole}
+                availableRoles={availableRoles}
                 onSwitch={setActiveRole}
               />
             )}

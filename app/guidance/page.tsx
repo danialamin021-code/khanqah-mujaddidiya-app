@@ -1,4 +1,5 @@
 import Link from "next/link";
+import GuidanceRequestForm from "@/components/GuidanceRequestForm";
 
 export default function GuidancePage() {
   return (
@@ -41,16 +42,20 @@ export default function GuidancePage() {
           </p>
         </section>
 
-        <div className="mt-10">
-          <button
-            type="button"
-            disabled
-            className="rounded-lg border border-green-soft bg-light-green/50 px-5 py-2.5 text-sm font-medium text-foreground/60"
-            title="Request flow will be available later"
-          >
-            Request Bayat (coming later)
-          </button>
-          <p className="mt-2 text-xs text-foreground/60">
+        <div className="mt-10 space-y-8">
+          <div>
+            <label className="block text-sm font-medium text-deep-green/90 mb-2">Request Bayat</label>
+            <Link
+              href="/bayat"
+              className="inline-block rounded-lg bg-muted-gold px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-gold-hover"
+            >
+              Go to Bayat →
+            </Link>
+          </div>
+          <div>
+            <GuidanceRequestForm />
+          </div>
+          <p className="text-xs text-foreground/60">
             All requests will be human-reviewed.
           </p>
         </div>

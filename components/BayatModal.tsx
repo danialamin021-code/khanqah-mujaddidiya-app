@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { submitBayatRequest } from "@/app/actions/bayat-requests";
+import { bayatFormSchema } from "@/lib/validations/bayat";
 
 const CHECKBOX_1_TEXT =
   "I make this bay‘ah purely and sincerely for the sake of Allah alone, seeking His pleasure, guidance, and nearness, without any worldly intention.";
@@ -17,6 +19,8 @@ const CITY_OPTIONS = ["Select city", "Lahore", "Karachi", "London", "New York", 
  */
 export default function BayatModal({ onClose }: { onClose: () => void }) {
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const [fullName, setFullName] = useState("");
   const [whatsApp, setWhatsApp] = useState("");
   const [country, setCountry] = useState("");
@@ -24,10 +28,50 @@ export default function BayatModal({ onClose }: { onClose: () => void }) {
   const [checkbox1, setCheckbox1] = useState(false);
   const [checkbox2, setCheckbox2] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    // TODO: API call to save Bayat request
-    setSubmitted(true);
+    setError(null);
+
+    const parsed = bayatFormSchema.safeParse({
+      fullName,
+      whatsapp: whatsApp,
+      country,
+      city,
+      checkbox1,
+      checkbox2,
+    });
+    if (!parsed.success) {
+      const first = parsed.error.flatten().fieldErrors;
+      const msg =
+        first.fullName?.[0] ??
+        first.whatsapp?.[0] ??
+        first.country?.[0] ??
+        first.city?.[0] ??
+        first.checkbox1?.[0] ??
+        first.checkbox2?.[0] ??
+        "Please fix the form errors.";
+      setError(msg);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const result = await submitBayatRequest({
+        fullName: parsed.data.fullName,
+        whatsapp: parsed.data.whatsapp,
+        country: parsed.data.country,
+        city: parsed.data.city,
+      });
+      if (result.success) {
+        setSubmitted(true);
+      } else {
+        setError(result.error ?? "Request failed. Please try again.");
+      }
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (submitted) {
@@ -43,7 +87,6 @@ export default function BayatModal({ onClose }: { onClose: () => void }) {
           <p className="mt-2 text-sm text-foreground/80">
             Thank you. Your Bayat request has been received. The Sheikh or his team will contact you. There is no instant confirmation — all requests are reviewed with care.
           </p>
-          {/* TODO: WhatsApp notification to Sheikh — UI placeholder only */}
           <button
             type="button"
             onClick={onClose}
@@ -156,17 +199,20 @@ export default function BayatModal({ onClose }: { onClose: () => void }) {
               <span className="leading-relaxed">{CHECKBOX_2_TEXT} <span className="text-foreground/60">(required)</span></span>
             </label>
           </div>
+          {error && <p className="text-sm text-red-600">{error}</p>}
           <div className="flex gap-3 pt-2">
             <button
               type="submit"
-              className="flex-1 rounded-lg bg-muted-gold py-2.5 text-sm font-medium text-white hover:bg-gold-hover"
+              disabled={loading}
+              className="flex-1 rounded-lg bg-muted-gold py-2.5 text-sm font-medium text-white transition-colors hover:bg-gold-hover disabled:opacity-60"
             >
-              Submit
+              {loading ? "Submitting…" : "Submit"}
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border border-green-soft py-2.5 px-4 text-sm font-medium text-deep-green hover:bg-light-green/50"
+              disabled={loading}
+              className="rounded-lg border border-green-soft py-2.5 px-4 text-sm font-medium text-deep-green hover:bg-light-green/50 disabled:opacity-60"
             >
               Cancel
             </button>

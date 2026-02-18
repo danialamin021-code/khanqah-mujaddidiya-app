@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { unassignTeacher } from "@/lib/actions/module-teachers";
 import DeleteConfirmModal from "@/components/ui/DeleteConfirmModal";
 
@@ -20,7 +21,7 @@ export default function UnassignButton({
   async function handleConfirm() {
     const res = await unassignTeacher(moduleId, userId);
     if (res?.error) {
-      alert(res.error);
+      toast.error(res.error);
       throw new Error(res.error);
     }
     router.refresh();

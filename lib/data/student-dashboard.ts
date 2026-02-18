@@ -98,3 +98,63 @@ export async function getStudentModuleStats(
     attendancePercentage,
   };
 }
+
+export interface ModuleLiveSession {
+  zoomLink: string | null;
+  topic: string | null;
+  date: string;
+  time: string | null;
+  status: string;
+}
+
+/**
+ * Get live or next scheduled session for a module (for Join Session CTA).
+ */
+export async function getModuleLiveSession(
+  moduleId: string
+): Promise<ModuleLiveSession | null> {
+  const supabase = await createClient();
+  if (!supabase) return null;
+
+  const { data: live } = await supabase
+    .from("module_sessions")
+    .select("zoom_link, topic, date, time, status")
+    .eq("module_id", moduleId)
+    .eq("is_archived", false)
+    .eq("status", "live")
+    .limit(1)
+    .maybeSingle();
+
+  if (live) {
+    return {
+      zoomLink: (live as { zoom_link: string | null }).zoom_link,
+      topic: (live as { topic: string | null }).topic,
+      date: (live as { date: string }).date,
+      time: (live as { time: string | null }).time,
+      status: (live as { status: string }).status,
+    };
+  }
+
+  const { data: next } = await supabase
+    .from("module_sessions")
+    .select("zoom_link, topic, date, time, status")
+    .eq("module_id", moduleId)
+    .eq("is_archived", false)
+    .eq("status", "scheduled")
+    .gte("date", new Date().toISOString().slice(0, 10))
+    .order("date", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (next) {
+    return {
+      zoomLink: (next as { zoom_link: string | null }).zoom_link,
+      topic: (next as { topic: string | null }).topic,
+      date: (next as { date: string }).date,
+      time: (next as { time: string | null }).time,
+      status: (next as { status: string }).status,
+    };
+  }
+
+  return null;
+}

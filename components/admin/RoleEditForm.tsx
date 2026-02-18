@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { updateUserRoles } from "@/app/actions/user-roles";
 import type { Role } from "@/lib/constants/permissions";
 import DeleteConfirmModal from "@/components/ui/DeleteConfirmModal";
@@ -12,7 +13,6 @@ export interface RoleEditFormProps {
   userId: string;
   userName: string;
   currentRoles: Role[];
-  onCancel: () => void;
   canAssignAdmin: boolean;
   canAssignTeacher: boolean;
 }
@@ -21,7 +21,6 @@ export default function RoleEditForm({
   userId,
   userName,
   currentRoles,
-  onCancel,
   canAssignAdmin,
   canAssignTeacher,
 }: RoleEditFormProps) {
@@ -48,17 +47,16 @@ export default function RoleEditForm({
   async function handleConfirm() {
     const res = await updateUserRoles(userId, selectedRoles);
     if (res?.error) {
-      alert(res.error);
+      toast.error(res.error);
       throw new Error(res.error);
     }
     router.push("/admin/users");
     router.refresh();
-    onCancel();
   }
 
   function handleCancel() {
     router.push("/admin/users");
-    onCancel();
+    router.refresh();
   }
 
   return (

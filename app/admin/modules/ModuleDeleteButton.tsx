@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { deleteModule } from "@/lib/actions/modules";
 import DeleteConfirmModal from "@/components/ui/DeleteConfirmModal";
 
@@ -18,7 +19,7 @@ export default function ModuleDeleteButton({
   async function handleConfirm() {
     const res = await deleteModule(moduleId);
     if (res?.error) {
-      alert(res.error);
+      toast.error(res.error);
       throw new Error(res.error);
     }
     router.refresh();

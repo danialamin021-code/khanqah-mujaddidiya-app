@@ -1,5 +1,11 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Documentation
+
+- [Bootstrap First Director](docs/BOOTSTRAP_FIRST_DIRECTOR.md) – Creating the first Director in a new environment
+- [E2E Testing Checklist](docs/E2E_TESTING_CHECKLIST.md) – End-to-end testing guide
+- [Production Readiness](docs/PRODUCTION_READINESS.md) – Pre-launch checklist
+
 ## Getting Started
 
 First, run the development server:

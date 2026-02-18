@@ -128,11 +128,17 @@ export async function requireTeacher(): Promise<boolean> {
 
 /** Active role for UI (from cookie). Used for server-rendered role-specific content. */
 export async function getActiveRoleForServer(): Promise<"student" | "teacher" | "admin"> {
+  const roles = await getUserRoles();
   const { cookies } = await import("next/headers");
   const store = await cookies();
   const cookie = store.get("activeRole")?.value;
-  if (cookie === "teacher" || cookie === "admin") return cookie;
-  const roles = await getUserRoles();
+  if (cookie === "student" || cookie === "teacher" || cookie === "admin") {
+    const hasRole =
+      (cookie === "student" && roles.includes("student")) ||
+      (cookie === "teacher" && roles.includes("teacher")) ||
+      (cookie === "admin" && (roles.includes("admin") || roles.includes("director")));
+    if (hasRole) return cookie;
+  }
   if (roles.includes("admin") || roles.includes("director")) return "admin";
   if (roles.includes("teacher")) return "teacher";
   return "student";
