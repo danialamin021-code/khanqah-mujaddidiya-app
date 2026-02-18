@@ -1,0 +1,113 @@
+"use client";
+
+import { Fragment } from "react";
+import Link from "next/link";
+import { useActiveRole } from "@/lib/hooks/use-active-role";
+import { LEARNING_MODULES } from "@/lib/constants/modules";
+import EssentialsPanel from "@/components/home/EssentialsPanel";
+import ModuleCard from "@/components/home/ModuleCard";
+import IntroSlider from "@/components/home/IntroSlider";
+import NewsAndUpdates from "@/components/home/NewsAndUpdates";
+import AssignedModulesCard from "@/components/home/AssignedModulesCard";
+import ReportsOverview from "@/components/home/ReportsOverview";
+
+export interface AssignedModule {
+  slug: string;
+  title: string;
+}
+
+export default function HomePageContent({
+  assignedModules,
+  teacherName,
+  reportsSection,
+}: {
+  assignedModules: AssignedModule[];
+  teacherName?: string;
+  reportsSection: React.ReactNode;
+}) {
+  const { activeRole } = useActiveRole();
+
+  const essentialsSection = (
+    <section key="essentials" className="px-4 py-6 md:py-8">
+      <div className="mx-auto max-w-4xl">
+        <EssentialsPanel />
+      </div>
+    </section>
+  );
+
+  const sliderSection = (
+    <section key="slider" className="border-t border-light-green bg-light-green/30 px-4 py-8 md:py-10">
+      <div className="mx-auto max-w-4xl">
+        <h2 className="font-heading text-xl font-normal text-deep-green">Introduction</h2>
+        <div className="mt-6">
+          <IntroSlider />
+        </div>
+      </div>
+    </section>
+  );
+
+  const modulesSection = (
+    <section key="modules" className="border-t border-light-green bg-[var(--background)] px-4 py-8 md:py-10">
+      <div className="mx-auto max-w-4xl">
+        <h2 className="font-heading text-xl font-normal text-deep-green">Learning Modules</h2>
+        <p className="mt-1 text-sm text-foreground/70">
+          Choose a module to explore. Enroll when you are ready.
+        </p>
+        <div className="mt-6 grid grid-cols-3 gap-4 sm:gap-5">
+          {LEARNING_MODULES.map((m) => (
+            <ModuleCard key={m.slug} slug={m.slug} name={m.name} />
+          ))}
+        </div>
+        <p className="mt-6 text-center">
+          <Link href="/modules" className="text-sm font-medium text-deep-green hover:underline">
+            View all modules →
+          </Link>
+        </p>
+      </div>
+    </section>
+  );
+
+  const assignedSection = assignedModules.length > 0 && (
+    <AssignedModulesCard key="assigned" modules={assignedModules} teacherName={teacherName} />
+  );
+
+  const newsSection = <NewsAndUpdates key="news" />;
+
+  let sections: React.ReactNode[];
+  if (activeRole === "admin") {
+    sections = [essentialsSection, sliderSection, <Fragment key="reports">{reportsSection}</Fragment>, newsSection];
+  } else if (activeRole === "teacher") {
+    sections = [
+      essentialsSection,
+      assignedSection,
+      sliderSection,
+      newsSection,
+    ].filter(Boolean);
+  } else {
+    sections = [sliderSection, essentialsSection, modulesSection, newsSection];
+  }
+
+  return (
+    <main className="min-h-full">
+      {sections}
+      <footer className="border-t border-light-green px-4 py-6">
+        <div className="mx-auto max-w-4xl flex flex-wrap items-center justify-between gap-4">
+          <p className="text-sm text-foreground/70">
+            A space for guided learning. Reach out when you are ready.
+          </p>
+          <div className="flex flex-wrap gap-4 text-sm">
+            <Link href="/onboarding" className="font-medium text-deep-green/90 hover:text-deep-green">
+              First time? Start here
+            </Link>
+            <Link href="/modules" className="font-medium text-deep-green/90 hover:text-deep-green">
+              Learning Modules
+            </Link>
+            <Link href="/contact" className="font-medium text-deep-green/90 hover:text-deep-green">
+              Contact
+            </Link>
+          </div>
+        </div>
+      </footer>
+    </main>
+  );
+}

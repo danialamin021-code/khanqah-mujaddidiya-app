@@ -1,0 +1,93 @@
+"use client";
+
+import { useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { updateModule } from "@/lib/actions/modules";
+import type { ModuleRow } from "@/lib/data/modules";
+
+export default function ModuleEditForm({
+  module,
+  onCancel,
+  existingSlugs,
+}: {
+  module: ModuleRow;
+  onCancel: () => void;
+  existingSlugs: string[];
+}) {
+  const [pending, startTransition] = useTransition();
+  const router = useRouter();
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const slug = (form.elements.namedItem("slug") as HTMLInputElement)?.value?.trim();
+    if (slug && existingSlugs.includes(slug)) {
+      alert("A module with this slug already exists.");
+      return;
+    }
+    startTransition(async () => {
+      const fd = new FormData(form);
+      const res = await updateModule(module.id, fd);
+      if (res?.error) {
+        alert(res.error);
+        return;
+      }
+      router.push("/admin/modules");
+      router.refresh();
+    });
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <h3 className="font-heading text-lg font-normal text-deep-green">Edit Module</h3>
+      <div>
+        <label className="block text-sm font-medium text-deep-green/90">Slug</label>
+        <input
+          name="slug"
+          type="text"
+          required
+          defaultValue={module.slug}
+          className="mt-1 w-full rounded-lg border border-green-soft bg-[var(--background)] px-3 py-2 text-sm text-foreground"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-deep-green/90">Title</label>
+        <input
+          name="title"
+          type="text"
+          required
+          defaultValue={module.title}
+          className="mt-1 w-full rounded-lg border border-green-soft bg-[var(--background)] px-3 py-2 text-sm text-foreground"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-deep-green/90">Description</label>
+        <textarea
+          name="description"
+          rows={3}
+          defaultValue={module.description ?? ""}
+          className="mt-1 w-full rounded-lg border border-green-soft bg-[var(--background)] px-3 py-2 text-sm text-foreground"
+        />
+      </div>
+      <div className="flex gap-3">
+        <button
+          type="submit"
+          disabled={pending}
+          className="rounded-lg bg-muted-gold px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gold-hover disabled:opacity-60"
+        >
+          {pending ? "Saving…" : "Save"}
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            router.push("/admin/modules");
+            router.refresh();
+          }}
+          className="rounded-lg border border-green-soft px-4 py-2 text-sm font-medium text-deep-green transition-colors hover:bg-light-green/50"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
+}

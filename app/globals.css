@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+/* Khanqah Mujaddidiyya — Brand colors */
+:root {
+  --background: #ffffff; /* Background */
+  --foreground: #2b2b2b; /* Body text */
+  --deep-green: #1f4d3a; /* Headings, links, icons */
+  --muted-gold: #c9a44c; /* Buttons */
+  --button-text: #ffffff; /* Button text */
+  --light-green: #e6f2ec; /* Cards / sections */
+  --gold-hover: #b08f3d; /* Button hover (darker for contrast) */
+  --green-soft: #c5ddd2; /* Borders, soft accents */
+  --nav-bg: #1f4d3a; /* Navigation background */
+  --nav-text: #ffffff; /* Navigation label text */
+  --nav-icon: #c9a44c; /* Navigation icons (gold) */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-deep-green: var(--deep-green);
+  --color-muted-gold: var(--muted-gold);
+  --color-button-text: var(--button-text);
+  --color-light-green: var(--light-green);
+  --color-gold-hover: var(--gold-hover);
+  --color-green-soft: var(--green-soft);
+  --color-nav-bg: var(--nav-bg);
+  --color-nav-text: var(--nav-text);
+  --color-nav-icon: var(--nav-icon);
+  --font-sans: var(--font-geist-sans);
+  --font-serif: var(--font-lora);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0f1412;
+    --foreground: #e5e5e0;
+    --deep-green: #3d7a5c;
+    --muted-gold: #c9a44c;
+    --button-text: #ffffff;
+    --light-green: #1a2e2a;
+    --gold-hover: #d4b04a;
+    --green-soft: #243d38;
+    --nav-bg: #1f4d3a;
+    --nav-text: #ffffff;
+    --nav-icon: #c9a44c;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  line-height: 1.65;
+}
+
+/* Serif for headings — use .font-heading */
+.font-heading {
+  font-family: var(--font-lora), Georgia, serif;
+}
+
+/* Minimal animations — fade-in, gentle appear */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up-soft {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up-soft 0.5s ease-out forwards;
+}
+
+/* Stagger children (for card lists) */
+.stagger > * {
+  opacity: 0;
+  animation: slide-up-soft 0.45s ease-out forwards;
+}
+.stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger > *:nth-child(6) { animation-delay: 0.3s; }
