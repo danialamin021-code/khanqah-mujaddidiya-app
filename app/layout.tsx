@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { Geist, Geist_Mono, Lora } from "next/font/google";
 import { Toaster } from "sonner";
-import AppNav from "@/components/AppNav";
 import SupabaseConfigBanner from "@/components/SupabaseConfigBanner";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
-import { ActiveRoleProvider } from "@/components/ActiveRoleProvider";
+import AuthAwareLayout from "@/components/AuthAwareLayout";
 import { getActiveRoleForServer } from "@/lib/auth";
 import "./globals.css";
 
@@ -67,13 +66,7 @@ export default async function RootLayout({
         <Toaster richColors position="top-center" closeButton />
         <ServiceWorkerRegistration />
         <SupabaseConfigBanner />
-        <ActiveRoleProvider initialRole={initialRole}>
-          <AppNav />
-          {/* Top bar: pt-14; bottom nav + safe area for notched devices */}
-          <div className="min-h-screen pt-14 pb-[calc(4rem+env(safe-area-inset-bottom,0px))]">
-            {children}
-          </div>
-        </ActiveRoleProvider>
+        <AuthAwareLayout initialRole={initialRole}>{children}</AuthAwareLayout>
       </body>
     </html>
   );

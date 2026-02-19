@@ -23,7 +23,7 @@ export default function AuthOnboardingBackground({
           sizes="100vw"
         />
       </div>
-      <div className="absolute inset-0 bg-black/60" aria-hidden />
+      <div className="absolute inset-0 bg-black/60 animate-fade-in" aria-hidden />
       <div className="relative z-10 min-h-screen">{children}</div>
     </div>
   );
