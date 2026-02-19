@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getCurrentRole } from "@/lib/auth";
 import { logActivity } from "@/lib/utils/activity-logger";
 import { notifyRequestWebhook } from "@/lib/utils/notify-webhook";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/utils/rate-limit";
 
 export interface GuidanceRequestInput {
   fullName: string;
@@ -24,6 +25,11 @@ export async function submitGuidanceRequest(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { success: false, error: "Not authenticated" };
+
+  const { max, windowMs } = RATE_LIMITS.guidance;
+  if (!checkRateLimit(`guidance:${user.id}`, max, windowMs)) {
+    return { success: false, error: "Too many Guidance requests. Please try again later." };
+  }
 
   const { data, error } = await supabase
     .from("guidance_requests")

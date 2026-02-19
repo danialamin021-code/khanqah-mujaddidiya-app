@@ -2,7 +2,7 @@
 
 import { Fragment } from "react";
 import Link from "next/link";
-import { useActiveRole } from "@/lib/hooks/use-active-role";
+import { useActiveRole } from "@/components/ActiveRoleProvider";
 import { LEARNING_MODULES } from "@/lib/constants/modules";
 import EssentialsPanel from "@/components/home/EssentialsPanel";
 import ModuleCard from "@/components/home/ModuleCard";

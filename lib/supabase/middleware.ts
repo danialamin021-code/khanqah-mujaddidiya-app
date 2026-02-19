@@ -18,10 +18,20 @@ function isPublicPath(pathname: string): boolean {
   return false;
 }
 
+/** Teacher panel: /teacher and /teacher/* — requires teacher, admin, or director. */
+function isTeacherPath(pathname: string): boolean {
+  return pathname === "/teacher" || pathname.startsWith("/teacher/");
+}
+
+/** Admin panel: /admin and /admin/* — requires admin or director. */
+function isAdminPath(pathname: string): boolean {
+  return pathname === "/admin" || pathname.startsWith("/admin/");
+}
+
 /**
  * Refreshes Supabase auth session and updates cookies.
  * Auth gateway: unauthenticated users on protected routes are redirected to /login.
- * Non-destructive: only adds redirect; public routes unchanged.
+ * RBAC: Students cannot access /teacher or /admin; Teachers cannot access /admin.
  */
 export async function updateSession(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
@@ -54,6 +64,34 @@ export async function updateSession(request: NextRequest) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("next", pathname);
     return NextResponse.redirect(loginUrl);
+  }
+
+  // RBAC: Block unauthorized access to /teacher and /admin
+  if (user && !isPublicPath(pathname)) {
+    if (isAdminPath(pathname)) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("roles")
+        .eq("id", user.id)
+        .single();
+      const roles = (profile?.roles ?? []) as string[];
+      const canAccessAdmin = roles.includes("admin") || roles.includes("director");
+      if (!canAccessAdmin) {
+        return NextResponse.redirect(new URL("/unauthorized", request.url));
+      }
+    } else if (isTeacherPath(pathname)) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("roles")
+        .eq("id", user.id)
+        .single();
+      const roles = (profile?.roles ?? []) as string[];
+      const canAccessTeacher =
+        roles.includes("teacher") || roles.includes("admin") || roles.includes("director");
+      if (!canAccessTeacher) {
+        return NextResponse.redirect(new URL("/unauthorized", request.url));
+      }
+    }
   }
 
   return supabaseResponse;

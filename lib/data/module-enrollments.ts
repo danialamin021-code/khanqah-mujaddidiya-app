@@ -10,24 +10,44 @@ export interface EnrolledStudent {
   email: string | null;
 }
 
+const STUDENTS_PAGE_SIZE = 50;
+
 /**
- * Get students enrolled in a module.
+ * Get students enrolled in a module with pagination.
  * Joins module_enrollments with profiles.
  */
 export async function getEnrolledStudents(
-  moduleId: string
-): Promise<EnrolledStudent[]> {
+  moduleId: string,
+  page = 1,
+  limit = STUDENTS_PAGE_SIZE
+): Promise<{ students: EnrolledStudent[]; totalCount: number }> {
   const supabase = await createClient();
-  if (!supabase) return [];
+  if (!supabase) return { students: [], totalCount: 0 };
 
-  const { data: enrollments, error } = await supabase
-    .from("module_enrollments")
-    .select("user_id")
-    .eq("module_id", moduleId)
-    .eq("status", "active")
-    .eq("is_archived", false);
+  const from = (page - 1) * limit;
+  const to = from + limit - 1;
 
-  if (error || !enrollments?.length) return [];
+  const [enrollmentsRes, countRes] = await Promise.all([
+    supabase
+      .from("module_enrollments")
+      .select("user_id")
+      .eq("module_id", moduleId)
+      .eq("status", "active")
+      .eq("is_archived", false)
+      .order("enrolled_at", { ascending: false })
+      .range(from, to),
+    supabase
+      .from("module_enrollments")
+      .select("id", { count: "exact", head: true })
+      .eq("module_id", moduleId)
+      .eq("status", "active")
+      .eq("is_archived", false),
+  ]);
+
+  const enrollments = enrollmentsRes.data ?? [];
+  const totalCount = countRes.count ?? 0;
+
+  if (enrollments.length === 0) return { students: [], totalCount };
 
   const userIds = enrollments.map((e) => e.user_id);
   const { data: profiles } = await supabase
@@ -35,11 +55,13 @@ export async function getEnrolledStudents(
     .select("id, full_name, email")
     .in("id", userIds);
 
-  return (profiles ?? []).map((p) => ({
+  const students = (profiles ?? []).map((p) => ({
     id: (p as { id: string }).id,
     full_name: (p as { full_name?: string | null }).full_name ?? null,
     email: (p as { email?: string | null }).email ?? null,
   })) as EnrolledStudent[];
+
+  return { students, totalCount };
 }
 
 /**

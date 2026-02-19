@@ -23,7 +23,7 @@ export default async function TeacherModuleAttendancePage({
           .eq("is_archived", false)
           .order("date", { ascending: false })
           .limit(20),
-        getEnrolledStudents(module_.id),
+        getEnrolledStudents(module_.id, 1, 9999).then((r) => r.students),
         (async () => {
           const { data: sessionRows } = await supabase
             .from("module_sessions")
@@ -39,7 +39,7 @@ export default async function TeacherModuleAttendancePage({
           return data ?? [];
         })(),
       ])
-    : [{ data: [] }, [], []];
+    : [{ data: [] }, [] as { id: string; full_name: string | null; email: string | null }[], []];
 
   const sessions = (sessionsRes && "data" in sessionsRes ? sessionsRes.data : []) as { id: string; date: string; time: string | null; topic: string | null; status: string }[];
   const attendance = (Array.isArray(attendanceRes) ? attendanceRes : []) as { id: string; session_id: string; user_id: string; status: string }[];

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import type { ActiveRole } from "@/lib/hooks/use-active-role";
+import type { ActiveRole } from "@/components/ActiveRoleProvider";
 import { ChevronDown } from "lucide-react";
 
 const ROLE_LABELS: Record<ActiveRole, string> = {
@@ -18,7 +18,7 @@ export default function RoleSwitcher({
 }: {
   activeRole: ActiveRole;
   availableRoles: ActiveRole[];
-  onSwitch: (role: ActiveRole) => void;
+  onSwitch: (role: ActiveRole) => void | Promise<void>;
   disabled?: boolean;
 }) {
   const [open, setOpen] = useState(false);

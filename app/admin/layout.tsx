@@ -12,7 +12,7 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const canAccess = await requireAdmin();
-  if (!canAccess) redirect("/home");
+  if (!canAccess) redirect("/unauthorized");
 
   return (
     <div className="min-h-full">

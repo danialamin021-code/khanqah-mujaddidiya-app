@@ -54,20 +54,34 @@ export interface ActivityLogRow {
   created_at: string;
 }
 
+const ACTIVITY_LOGS_PAGE_SIZE = 25;
+
 /**
- * Get activity logs for admin. Only admin/director can read (RLS).
+ * Get activity logs for admin with pagination. Only admin/director can read (RLS).
  */
-export async function getActivityLogs(limit = 100): Promise<ActivityLogRow[]> {
+export async function getActivityLogs(
+  page = 1,
+  limit = ACTIVITY_LOGS_PAGE_SIZE
+): Promise<{ logs: ActivityLogRow[]; totalCount: number }> {
   const supabase = await createClient();
-  if (!supabase) return [];
+  if (!supabase) return { logs: [], totalCount: 0 };
 
-  const { data } = await supabase
-    .from("system_activity_logs")
-    .select("id, actor_id, actor_role, action_type, entity_type, entity_id, description, metadata, created_at")
-    .order("created_at", { ascending: false })
-    .limit(limit);
+  const from = (page - 1) * limit;
+  const to = from + limit - 1;
 
-  return (data ?? []) as ActivityLogRow[];
+  const [logsRes, countRes] = await Promise.all([
+    supabase
+      .from("system_activity_logs")
+      .select("id, actor_id, actor_role, action_type, entity_type, entity_id, description, metadata, created_at")
+      .order("created_at", { ascending: false })
+      .range(from, to),
+    supabase.from("system_activity_logs").select("id", { count: "exact", head: true }),
+  ]);
+
+  const totalCount = countRes.count ?? 0;
+  const logs = (logsRes.data ?? []) as ActivityLogRow[];
+
+  return { logs, totalCount };
 }
 
 /**

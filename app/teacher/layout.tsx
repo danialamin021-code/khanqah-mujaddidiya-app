@@ -11,7 +11,7 @@ export default async function TeacherLayout({
   children: React.ReactNode;
 }) {
   const canAccess = await requireTeacher();
-  if (!canAccess) redirect("/home");
+  if (!canAccess) redirect("/unauthorized");
 
   return (
     <div className="min-h-full">

@@ -4,6 +4,9 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentRole } from "@/lib/auth";
 import { logActivity } from "@/lib/utils/activity-logger";
+import { getTeachersForModule } from "@/lib/data/modules";
+import { notifyEnrollmentWebhook } from "@/lib/utils/notify-webhook";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/utils/rate-limit";
 
 export interface EnrollMetadata {
   fullName: string;
@@ -27,6 +30,11 @@ export async function enrollInModule(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { success: false, error: "Not authenticated" };
+
+  const { max, windowMs } = RATE_LIMITS.enrollment;
+  if (!checkRateLimit(`enrollment:${user.id}`, max, windowMs)) {
+    return { success: false, error: "Too many enrollment attempts. Please try again later." };
+  }
 
   // Invariant: enrollment must reference valid module
   const { data: mod } = await supabase
@@ -67,6 +75,25 @@ export async function enrollInModule(
     entityId: inserted?.id ?? undefined,
     description: `Enrolled in module: ${(mod as { title: string }).title}`,
     metadata: { moduleId },
+  });
+
+  const teachers = await getTeachersForModule(moduleId);
+  await notifyEnrollmentWebhook({
+    event: "module_enrollment",
+    enrollmentId: inserted!.id,
+    module: { id: mod.id, title: (mod as { title: string }).title },
+    student: {
+      fullName: metadata?.fullName?.trim() || null,
+      whatsapp: metadata?.whatsapp?.trim() || null,
+      email: user.email ?? null,
+    },
+    teachers: teachers.map((t) => ({
+      userId: t.id,
+      fullName: t.fullName,
+      email: t.email ?? null,
+    })),
+    notifyAdmin: true,
+    submittedAt: new Date().toISOString(),
   });
 
   revalidatePath("/modules");

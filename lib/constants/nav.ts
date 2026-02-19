@@ -79,6 +79,7 @@ export const MENU_TEACHER: NavItem[] = [
   { href: "/teacher/attendance", label: "Attendance", Icon: ClipboardCheck },
   { href: "/teacher/resources", label: "Resources", Icon: FileText },
   { href: "/teacher/announcements", label: "Announcements", Icon: Megaphone },
+  { href: "/settings", label: "Settings", Icon: Settings },
 ];
 
 /** Admin hamburger items (exclusive when activeRole = admin). */

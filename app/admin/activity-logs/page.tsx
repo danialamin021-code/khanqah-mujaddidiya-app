@@ -1,11 +1,20 @@
 import Link from "next/link";
 import { getActivityLogs } from "@/lib/data/admin-analytics";
 
+const PAGE_SIZE = 25;
+
 /**
  * Activity logs — admin/director only (enforced by layout + RLS).
  */
-export default async function AdminActivityLogsPage() {
-  const logs = await getActivityLogs();
+export default async function AdminActivityLogsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const params = await searchParams;
+  const page = Math.max(1, parseInt(params.page ?? "1", 10) || 1);
+  const { logs, totalCount } = await getActivityLogs(page, PAGE_SIZE);
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
   return (
     <div className="space-y-8">
@@ -58,9 +67,33 @@ export default async function AdminActivityLogsPage() {
         )}
       </div>
 
+      {totalPages > 1 && (
+        <div className="flex flex-wrap items-center gap-2">
+          {page > 1 && (
+            <Link
+              href={`/admin/activity-logs?page=${page - 1}`}
+              className="rounded-lg border border-green-soft px-4 py-2 text-sm font-medium text-deep-green hover:bg-light-green/50"
+            >
+              ← Previous
+            </Link>
+          )}
+          <span className="text-sm text-foreground/70">
+            Page {page} of {totalPages} ({totalCount} total)
+          </span>
+          {page < totalPages && (
+            <Link
+              href={`/admin/activity-logs?page=${page + 1}`}
+              className="rounded-lg border border-green-soft px-4 py-2 text-sm font-medium text-deep-green hover:bg-light-green/50"
+            >
+              Next →
+            </Link>
+          )}
+        </div>
+      )}
+
       <Link
         href="/admin"
-        className="inline-block text-sm font-medium text-deep-green hover:underline"
+        className="mt-6 inline-block text-sm font-medium text-deep-green hover:underline"
       >
         ← Admin Home
       </Link>

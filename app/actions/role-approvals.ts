@@ -101,6 +101,15 @@ export async function rejectRoleRequest(targetUserId: string): Promise<{ success
 
   const myRoles = (myProfile?.roles ?? []) as Role[];
   if (!canAssignTeacherOrAdmin(myRoles) && !canAssignRoles(myRoles)) {
+    await logActivity({
+      actorId: user.id,
+      actorRole: (myRoles[0] as string) ?? "student",
+      actionType: "failed_authorization",
+      entityType: "user",
+      entityId: targetUserId,
+      description: "Reject role request: not authorized",
+      metadata: { action: "reject_role_request" },
+    });
     return { success: false, error: "Not authorized" };
   }
 
@@ -110,6 +119,17 @@ export async function rejectRoleRequest(targetUserId: string): Promise<{ success
     .eq("id", targetUserId);
 
   if (error) return { success: false, error: error.message };
+
+  const actorRole = (await getCurrentRole()) ?? "admin";
+  await logActivity({
+    actorId: user.id,
+    actorRole,
+    actionType: "reject_role_request",
+    entityType: "user",
+    entityId: targetUserId,
+    description: "Rejected role request",
+    metadata: {},
+  });
 
   revalidatePath("/admin/approvals");
   revalidatePath("/admin/users");

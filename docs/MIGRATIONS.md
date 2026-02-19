@@ -34,6 +34,7 @@ supabase db push
 | 20250214 | bayat_guidance_requests | Bayat, guidance requests |
 | 20250215 | platform_news_events | platform_news, platform_events |
 | 20250216 | notification_preferences | notify_announcements, notify_events |
+| 20250217 | production_hardening_rls | RLS fixes, profile protection, indexes |
 
 ## Manual check
 

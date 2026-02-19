@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getCurrentRole } from "@/lib/auth";
 import { logActivity } from "@/lib/utils/activity-logger";
 import { notifyRequestWebhook } from "@/lib/utils/notify-webhook";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/utils/rate-limit";
 
 export interface BayatRequestInput {
   fullName: string;
@@ -23,6 +24,11 @@ export async function submitBayatRequest(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { success: false, error: "Not authenticated" };
+
+  const { max, windowMs } = RATE_LIMITS.bayat;
+  if (!checkRateLimit(`bayat:${user.id}`, max, windowMs)) {
+    return { success: false, error: "Too many Bayat requests. Please try again later." };
+  }
 
   const { data, error } = await supabase
     .from("bayat_requests")

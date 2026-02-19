@@ -4,7 +4,7 @@ import Link from "next/link";
 import SafeImage from "@/components/SafeImage";
 import { usePathname } from "next/navigation";
 import { useUser } from "@/lib/hooks/use-user";
-import { useActiveRole } from "@/lib/hooks/use-active-role";
+import { useActiveRole } from "@/components/ActiveRoleProvider";
 import { useState } from "react";
 import { Menu, type LucideIcon } from "lucide-react";
 import HamburgerMenu from "./HamburgerMenu";
