@@ -83,8 +83,8 @@ export default function ReportsTable({
           <p className="mt-1 text-sm text-foreground/70">
             Per-module enrollment and average attendance.
           </p>
-          <div className="mt-4 overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="mt-4 overflow-x-auto -mx-2 px-2 sm:mx-0 sm:px-0">
+            <table className="w-full min-w-[500px] text-sm">
               <thead>
                 <tr className="border-b border-green-soft bg-light-green/60">
                   <th className="px-4 py-3 text-left font-medium text-deep-green">Module</th>

@@ -70,10 +70,10 @@ export default function AdminNav() {
   }, []);
 
   return (
-    <nav className="flex flex-wrap items-center gap-2 text-sm">
+    <nav className="-mx-2 flex flex-wrap items-center gap-2 overflow-x-auto px-2 py-1 text-sm sm:mx-0 sm:overflow-visible sm:px-0">
       <Link
         href="/admin"
-        className={`rounded-lg px-3 py-2 font-medium transition-colors ${
+        className={`flex min-h-[44px] shrink-0 items-center rounded-lg px-3 py-2 font-medium transition-colors ${
           pathname === "/admin" ? "bg-light-green/60 text-deep-green" : "text-deep-green/80 hover:bg-light-green/40 hover:text-deep-green"
         }`}
       >
@@ -91,7 +91,7 @@ export default function AdminNav() {
             <button
               type="button"
               onClick={() => setOpenGroup((g) => (g === group.label ? null : group.label))}
-              className={`flex items-center gap-1.5 rounded-lg px-3 py-2 font-medium transition-colors ${
+              className={`flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 font-medium transition-colors ${
                 active ? "bg-light-green/60 text-deep-green" : "text-deep-green/80 hover:bg-light-green/40 hover:text-deep-green"
               }`}
               aria-expanded={isOpen}
@@ -122,7 +122,7 @@ export default function AdminNav() {
 
       <Link
         href="/home"
-        className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-deep-green/70 transition-colors hover:bg-light-green/40 hover:text-deep-green"
+        className="flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-deep-green/70 transition-colors hover:bg-light-green/40 hover:text-deep-green"
       >
         <ArrowLeft className="h-4 w-4" strokeWidth={2} />
         App

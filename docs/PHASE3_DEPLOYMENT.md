@@ -83,6 +83,8 @@ After your first deploy, get your URL (e.g. `https://khanqah-mujaddidiya-app.ver
 - [ ] Test paths, enrollment, profile, modules, admin
 - [ ] Confirm Auth redirects work (login → callback → dashboard)
 
+**Internal team testing:** See [BETA_TESTING.md](./BETA_TESTING.md) — disable email confirmation and allowlist so anyone can sign up.
+
 ---
 
 ## 4. Custom Domain (Optional)

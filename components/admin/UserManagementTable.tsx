@@ -41,19 +41,19 @@ export default function UserManagementTable({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <input
           type="search"
           placeholder="Search by email or name..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="rounded-lg border border-green-soft bg-[var(--background)] px-3 py-2 text-sm focus:border-deep-green/40 focus:outline-none focus:ring-1 focus:ring-deep-green/30"
+          className="min-h-[44px] min-w-0 flex-1 rounded-lg border border-green-soft bg-[var(--background)] px-3 py-2 text-sm focus:border-deep-green/40 focus:outline-none focus:ring-1 focus:ring-deep-green/30"
           aria-label="Search users"
         />
         <select
           value={roleFilter}
           onChange={(e) => setRoleFilter(e.target.value as Role | "all")}
-          className="rounded-lg border border-green-soft bg-[var(--background)] px-3 py-2 text-sm focus:border-deep-green/40 focus:outline-none"
+          className="min-h-[44px] min-w-0 rounded-lg border border-green-soft bg-[var(--background)] px-3 py-2 text-sm focus:border-deep-green/40 focus:outline-none sm:min-w-[140px]"
           aria-label="Filter by role"
         >
           <option value="all">All roles</option>
@@ -64,8 +64,8 @@ export default function UserManagementTable({
         </select>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-green-soft">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto rounded-xl border border-green-soft -mx-2 px-2 sm:mx-0 sm:px-0">
+        <table className="w-full min-w-[600px] text-sm">
           <thead>
             <tr className="border-b border-green-soft bg-light-green/60">
               <th className="px-4 py-3 text-left font-medium text-deep-green">Email</th>

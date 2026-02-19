@@ -53,7 +53,7 @@ export default function HomePageContent({
         <p className="mt-1 text-sm text-foreground/70">
           Choose a module to explore. Enroll when you are ready.
         </p>
-        <div className="mt-6 grid grid-cols-3 gap-4 sm:gap-5">
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:gap-5">
           {LEARNING_MODULES.map((m) => (
             <ModuleCard key={m.slug} slug={m.slug} name={m.name} />
           ))}
@@ -82,7 +82,7 @@ export default function HomePageContent({
       <Fragment key="news">{newsSection}</Fragment>,
     ].filter(Boolean);
   } else {
-    sections = [sliderSection, essentialsSection, modulesSection, <Fragment key="news">{newsSection}</Fragment>];
+    sections = [essentialsSection, modulesSection, sliderSection, <Fragment key="news">{newsSection}</Fragment>];
   }
 
   return (

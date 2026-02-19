@@ -95,7 +95,7 @@ export default function AttendanceList({
                     type="button"
                     onClick={() => handleToggle(session.id, student.id, status)}
                     disabled={pending}
-                    className={`rounded px-3 py-1 text-xs font-medium transition-colors ${
+                    className={`min-h-[44px] min-w-[60px] rounded px-3 py-2 text-xs font-medium transition-colors ${
                       status === "present"
                         ? "bg-green-600/20 text-green-700 dark:text-green-400"
                         : "bg-foreground/10 text-foreground/70 hover:bg-foreground/20"

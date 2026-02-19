@@ -76,34 +76,34 @@ export default function SessionsList({
       />
       <form onSubmit={handleCreate} className="rounded-xl border border-green-soft bg-[var(--background)] p-4">
         <h3 className="font-heading text-sm font-normal text-deep-green">Add session</h3>
-        <div className="mt-3 flex flex-wrap gap-3">
+        <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
           <input
             name="date"
             type="date"
             required
-            className="rounded-lg border border-green-soft bg-[var(--background)] px-3 py-2 text-sm"
+            className="min-h-[44px] min-w-0 flex-1 rounded-lg border border-green-soft bg-[var(--background)] px-3 py-2 text-sm"
           />
           <input
             name="time"
             type="time"
-            className="rounded-lg border border-green-soft bg-[var(--background)] px-3 py-2 text-sm"
+            className="min-h-[44px] min-w-0 flex-1 rounded-lg border border-green-soft bg-[var(--background)] px-3 py-2 text-sm"
           />
           <input
             name="topic"
             type="text"
             placeholder="Topic"
-            className="rounded-lg border border-green-soft bg-[var(--background)] px-3 py-2 text-sm"
+            className="min-h-[44px] min-w-0 flex-1 rounded-lg border border-green-soft bg-[var(--background)] px-3 py-2 text-sm"
           />
           <input
             name="zoom_link"
             type="url"
             placeholder="Zoom link"
-            className="rounded-lg border border-green-soft bg-[var(--background)] px-3 py-2 text-sm min-w-[200px]"
+            className="min-w-0 flex-1 rounded-lg border border-green-soft bg-[var(--background)] px-3 py-2 text-sm sm:min-w-[200px]"
           />
           <button
             type="submit"
             disabled={pending}
-            className="rounded-lg bg-muted-gold px-4 py-2 text-sm font-medium text-white hover:bg-gold-hover disabled:opacity-60"
+            className="min-h-[44px] rounded-lg bg-muted-gold px-4 py-2 text-sm font-medium text-white hover:bg-gold-hover disabled:opacity-60"
           >
             {pending ? "Adding…" : "Add"}
           </button>
@@ -113,8 +113,8 @@ export default function SessionsList({
       {list.length === 0 ? (
         <p className="text-sm text-foreground/70">No sessions yet.</p>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-green-soft">
-          <table className="w-full text-sm">
+        <div className="overflow-x-auto rounded-xl border border-green-soft -mx-2 px-2 sm:mx-0 sm:px-0">
+          <table className="w-full min-w-[520px] text-sm">
             <thead>
               <tr className="border-b border-green-soft bg-light-green/60">
                 <th className="px-4 py-3 text-left font-medium text-deep-green">Date</th>

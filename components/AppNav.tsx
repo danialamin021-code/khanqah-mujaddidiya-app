@@ -61,7 +61,7 @@ function AppNavInner() {
             <button
               type="button"
               onClick={() => setMenuOpen(true)}
-              className="rounded p-2 text-[var(--nav-icon)] hover:bg-white/10 transition-colors"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded p-2 text-[var(--nav-icon)] transition-colors hover:bg-white/10"
               aria-label="Open menu"
             >
               <Menu className="h-6 w-6" strokeWidth={2} aria-hidden />
@@ -92,9 +92,11 @@ function AppNavInner() {
             )}
             <Link
               href="/bayat"
-              className="rounded-lg bg-[var(--muted-gold)] px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-[var(--gold-hover)]"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg bg-[var(--muted-gold)] px-3 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-[var(--gold-hover)] sm:min-w-0 sm:px-4"
+              aria-label="Perform Bayat"
             >
-              Perform Bayat
+              <span className="hidden sm:inline">Perform Bayat</span>
+              <span className="sm:hidden">Bayat</span>
             </Link>
           </div>
         </div>
@@ -104,10 +106,10 @@ function AppNavInner() {
 
       {/* Bottom nav: role-aware, mobile-first */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-30 border-t border-[var(--nav-bg)]/80 bg-[var(--nav-bg)] backdrop-blur"
+        className="fixed bottom-0 left-0 right-0 z-30 border-t border-[var(--nav-bg)]/80 bg-[var(--nav-bg)] pb-[env(safe-area-inset-bottom,0px)] backdrop-blur"
         aria-label="Main navigation"
       >
-        <div className="flex h-16 items-stretch">
+        <div className="flex h-16 min-h-[64px] items-stretch">
           {bottomNav.map(({ href, label, Icon }) => (
             <BottomNavLink
               key={href}

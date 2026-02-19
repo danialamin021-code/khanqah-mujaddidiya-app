@@ -63,25 +63,25 @@ export default function ResourcesList({
     <div className="mt-6 space-y-6">
       <form onSubmit={handleAdd} className="rounded-xl border border-green-soft bg-light-green/30 p-4">
         <h3 className="font-medium text-deep-green/90">Add resource</h3>
-        <div className="mt-3 flex flex-wrap gap-3">
+        <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
           <input
             type="text"
             placeholder="Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="min-w-[140px] flex-1 rounded-lg border border-green-soft bg-[var(--background)] px-3 py-2 text-sm"
+            className="min-h-[44px] min-w-0 flex-1 rounded-lg border border-green-soft bg-[var(--background)] px-3 py-2 text-sm"
           />
           <input
             type="url"
             placeholder="URL (https://...)"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            className="min-w-[180px] flex-1 rounded-lg border border-green-soft bg-[var(--background)] px-3 py-2 text-sm"
+            className="min-h-[44px] min-w-0 flex-1 rounded-lg border border-green-soft bg-[var(--background)] px-3 py-2 text-sm"
           />
           <select
             value={type}
             onChange={(e) => setType(e.target.value as "link" | "pdf" | "file")}
-            className="rounded-lg border border-green-soft bg-[var(--background)] px-3 py-2 text-sm"
+            className="min-h-[44px] rounded-lg border border-green-soft bg-[var(--background)] px-3 py-2 text-sm"
           >
             <option value="link">Link</option>
             <option value="pdf">PDF</option>
@@ -90,7 +90,7 @@ export default function ResourcesList({
           <button
             type="submit"
             disabled={loading}
-            className="rounded-lg bg-muted-gold px-4 py-2 text-sm font-medium text-white hover:bg-gold-hover disabled:opacity-60"
+            className="min-h-[44px] rounded-lg bg-muted-gold px-4 py-2 text-sm font-medium text-white hover:bg-gold-hover disabled:opacity-60"
           >
             Add
           </button>

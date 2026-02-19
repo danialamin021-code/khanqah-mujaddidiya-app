@@ -10,6 +10,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Documentation
 
+- [Beta Testing](docs/BETA_TESTING.md) – Enable internal team testing on Vercel
 - [Bootstrap First Director](docs/BOOTSTRAP_FIRST_DIRECTOR.md) – Creating the first Director in a new environment
 - [E2E Testing Checklist](docs/E2E_TESTING_CHECKLIST.md) – End-to-end testing guide
 - [Production Readiness](docs/PRODUCTION_READINESS.md) – Pre-launch checklist

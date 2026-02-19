@@ -43,7 +43,7 @@ export default function HamburgerMenu({
           <button
             type="button"
             onClick={onClose}
-            className="rounded p-2 text-foreground/70 hover:bg-light-green/50 hover:text-deep-green"
+            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded p-2 text-foreground/70 hover:bg-light-green/50 hover:text-deep-green"
             aria-label="Close menu"
           >
             <X className="h-5 w-5" strokeWidth={2} aria-hidden />

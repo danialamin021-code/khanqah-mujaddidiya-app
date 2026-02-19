@@ -23,6 +23,12 @@ const lora = Lora({
   weight: ["400", "500", "600"],
 });
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export const metadata: Metadata = {
   title: "Khanqah Mujaddidiyya",
   description: "A calm, guided spiritual learning companion.",
@@ -59,8 +65,8 @@ export default function RootLayout({
         <ServiceWorkerRegistration />
         <SupabaseConfigBanner />
         <AppNav />
-        {/* Top bar: pt-14; bottom nav always (mobile-first): pb-16 */}
-        <div className="min-h-screen pt-14 pb-16">
+        {/* Top bar: pt-14; bottom nav + safe area for notched devices */}
+        <div className="min-h-screen pt-14 pb-[calc(4rem+env(safe-area-inset-bottom,0px))]">
           {children}
         </div>
       </body>
