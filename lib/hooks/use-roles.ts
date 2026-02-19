@@ -19,8 +19,10 @@ export function useRoles() {
   useEffect(() => {
     const supabase = createClient();
     if (!supabase) {
-      setRoles(["student"]);
-      setLoading(false);
+      queueMicrotask(() => {
+        setRoles(["student"]);
+        setLoading(false);
+      });
       return;
     }
 

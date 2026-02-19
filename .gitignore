@@ -9,9 +9,12 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
+/vendor
 
 # testing
 /coverage
+/playwright-report/
+/test-results/
 
 # next.js
 /.next/
@@ -20,19 +23,41 @@
 # production
 /build
 
-# misc
-.DS_Store
-.cursor/
+# env & secrets (never commit)
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 *.pem
 
-# debug
+# IDE & editor
+.cursor/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# debug & logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# temp & cache
+*.tmp
+*.temp
+.cache/
+.parcel-cache/
+.turbo/
 
 # vercel
 .vercel

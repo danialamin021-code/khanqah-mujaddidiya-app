@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import SafeImage from "@/components/SafeImage";
 import { usePathname } from "next/navigation";
 import { useUser } from "@/lib/hooks/use-user";
 import { useActiveRole } from "@/lib/hooks/use-active-role";
@@ -11,8 +11,7 @@ import HamburgerMenu from "./HamburgerMenu";
 import RoleSwitcher from "./RoleSwitcher";
 import { getBottomNavForActiveRole } from "@/lib/constants/nav";
 
-/** Horizontal logo for top bar. File: public/assets/common/navbarlogo.png */
-const LOGO_SRC = "/assets/common/navbarlogo.png";
+import { NAV_LOGO } from "@/lib/constants/sheikh";
 
 function BottomNavLink({
   href,
@@ -72,13 +71,14 @@ function AppNavInner() {
               className="flex items-center shrink-0 hover:opacity-90 transition-opacity"
               aria-label="Khanqah Mujaddidiyya — Home"
             >
-              <Image
-                src={LOGO_SRC}
+              <SafeImage
+                src={NAV_LOGO}
                 alt="Khanqah Mujaddidiyya"
                 width={180}
                 height={44}
                 className="h-9 w-auto max-w-[160px] object-contain sm:h-10 sm:max-w-[200px] md:max-w-[220px]"
                 priority
+                fallbackClassName="bg-white/20 min-h-[36px] min-w-[120px]"
               />
             </Link>
           </div>

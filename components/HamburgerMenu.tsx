@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { User, X } from "lucide-react";
+import { User, X, Settings } from "lucide-react";
 import { useUser } from "@/lib/hooks/use-user";
 import { getMenuItemsForActiveRole } from "@/lib/constants/nav";
 import type { ActiveRoleForNav } from "@/lib/constants/nav";
@@ -65,6 +65,16 @@ export default function HamburgerMenu({
               {label}
             </Link>
           ))}
+          {!loading && user && (
+            <Link
+              href="/settings"
+              onClick={onClose}
+              className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-deep-green/80 hover:bg-green-soft/50"
+            >
+              <Settings className="h-5 w-5 shrink-0" strokeWidth={2} aria-hidden />
+              Settings
+            </Link>
+          )}
           {!loading && (
             user ? (
               <Link

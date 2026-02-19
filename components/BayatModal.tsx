@@ -14,8 +14,7 @@ const COUNTRY_OPTIONS = ["Select country", "Pakistan", "United Kingdom", "United
 const CITY_OPTIONS = ["Select city", "Lahore", "Karachi", "London", "New York", "Other"];
 
 /**
- * Bayat request form. UI only.
- * TODO: Submit to backend; WhatsApp notification to Sheikh (placeholder only).
+ * Bayat request form. Persists to bayat_requests; admin reviews at /admin/requests.
  */
 export default function BayatModal({ onClose }: { onClose: () => void }) {
   const [submitted, setSubmitted] = useState(false);

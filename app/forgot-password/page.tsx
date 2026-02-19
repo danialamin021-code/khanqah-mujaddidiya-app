@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
@@ -10,7 +9,6 @@ import AuthOnboardingBackground from "@/components/AuthOnboardingBackground";
 const LOGO_SRC = "/assets/common/onboardingauthlogo.png";
 
 function ForgotPasswordForm() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);

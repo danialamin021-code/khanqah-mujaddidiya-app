@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentRole } from "@/lib/auth";
 import { logActivity } from "@/lib/utils/activity-logger";
+import { notifyRequestWebhook } from "@/lib/utils/notify-webhook";
 
 export interface GuidanceRequestInput {
   fullName: string;
@@ -49,6 +50,17 @@ export async function submitGuidanceRequest(
     entityId: data?.id,
     description: "Submitted Guidance request",
     metadata: {},
+  });
+
+  await notifyRequestWebhook({
+    type: "guidance",
+    id: data?.id ?? "",
+    fullName: input.fullName.trim(),
+    whatsapp: input.whatsapp.trim(),
+    country: input.country?.trim() || undefined,
+    city: input.city?.trim() || undefined,
+    message: input.message?.trim() || undefined,
+    submittedAt: new Date().toISOString(),
   });
 
   revalidatePath("/guidance");

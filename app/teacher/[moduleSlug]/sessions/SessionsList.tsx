@@ -19,7 +19,7 @@ interface SessionRow {
 
 export default function SessionsList({
   moduleId,
-  moduleSlug,
+  moduleSlug: _moduleSlug,
   initialSessions,
 }: {
   moduleId: string;

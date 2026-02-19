@@ -1,7 +1,10 @@
 import Link from "next/link";
+import SafeImage from "@/components/SafeImage";
 import GuidanceRequestForm from "@/components/GuidanceRequestForm";
+import { SHEIKH_CONFIG } from "@/lib/constants/sheikh";
 
 export default function GuidancePage() {
+  const { name, image, bioShort } = SHEIKH_CONFIG;
   return (
     <main className="min-h-full px-6 py-8 md:py-10">
       <div className="mx-auto max-w-2xl">
@@ -13,13 +16,21 @@ export default function GuidancePage() {
         </p>
 
         <section className="mt-10 flex flex-col gap-6 sm:flex-row sm:items-start">
-          <div className="h-24 w-24 shrink-0 rounded-full bg-light-green" aria-hidden />
+          <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-full bg-light-green">
+            <SafeImage
+              src={image}
+              alt=""
+              fill
+              className="object-cover object-center"
+              sizes="96px"
+            />
+          </div>
           <div>
             <h2 className="font-heading text-lg font-normal text-deep-green">
-              Sheikh (Placeholder)
+              {name}
             </h2>
             <p className="mt-2 text-foreground/80 leading-relaxed">
-              A short bio will appear here. Photo and name are placeholders. Content will be provided with care and respect.
+              {bioShort}
             </p>
           </div>
         </section>

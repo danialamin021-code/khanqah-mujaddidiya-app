@@ -1,4 +1,4 @@
-import { redirect, notFound } from "next/navigation";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import { requireModuleAccessBySlug } from "@/lib/auth";
 import { getModuleBySlug } from "@/lib/data/modules";

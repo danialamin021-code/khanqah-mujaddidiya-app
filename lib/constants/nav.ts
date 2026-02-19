@@ -20,9 +20,9 @@ import {
   MessageCircle,
   Compass,
   FolderOpen,
-  Shield,
   UserCog,
   BookMarked,
+  Heart,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -65,6 +65,8 @@ export const MENU_STUDENT: NavItem[] = [
   { href: "/guidance", label: "Guidance", Icon: BookOpen },
   { href: "/sheikh", label: "Sheikh Introduction", Icon: User },
   { href: "/projects", label: "Our Projects", Icon: FolderOpen },
+  { href: "/donate", label: "Support", Icon: Heart },
+  { href: "/events", label: "Events", Icon: Calendar },
   { href: "/settings", label: "Settings", Icon: Settings },
 ];
 

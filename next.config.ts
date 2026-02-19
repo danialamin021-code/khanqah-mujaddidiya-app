@@ -1,4 +1,13 @@
 import type { NextConfig } from "next";
+import path from "path";
+
+// Sentry is optional; only used when DSN is set and package is installed
+let withSentryConfig: (config: NextConfig, opts: object) => NextConfig = (c) => c;
+try {
+  withSentryConfig = require("@sentry/nextjs").withSentryConfig;
+} catch {
+  // @sentry/nextjs not installed
+}
 
 const securityHeaders = [
   { key: "X-DNS-Prefetch-Control", value: "on" },
@@ -24,9 +33,18 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  turbopack: { root: path.join(__dirname) },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
 };
 
-export default nextConfig;
+const sentryConfig = process.env.NEXT_PUBLIC_SENTRY_DSN
+  ? withSentryConfig(nextConfig, {
+      org: process.env.SENTRY_ORG ?? "",
+      project: process.env.SENTRY_PROJECT ?? "",
+      silent: !process.env.CI,
+    })
+  : nextConfig;
+
+export default sentryConfig;

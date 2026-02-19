@@ -7,9 +7,7 @@ import { LEARNING_MODULES } from "@/lib/constants/modules";
 import EssentialsPanel from "@/components/home/EssentialsPanel";
 import ModuleCard from "@/components/home/ModuleCard";
 import IntroSlider from "@/components/home/IntroSlider";
-import NewsAndUpdates from "@/components/home/NewsAndUpdates";
 import AssignedModulesCard from "@/components/home/AssignedModulesCard";
-import ReportsOverview from "@/components/home/ReportsOverview";
 
 export interface AssignedModule {
   slug: string;
@@ -20,10 +18,12 @@ export default function HomePageContent({
   assignedModules,
   teacherName,
   reportsSection,
+  newsSection,
 }: {
   assignedModules: AssignedModule[];
   teacherName?: string;
   reportsSection: React.ReactNode;
+  newsSection: React.ReactNode;
 }) {
   const { activeRole } = useActiveRole();
 
@@ -71,20 +71,18 @@ export default function HomePageContent({
     <AssignedModulesCard key="assigned" modules={assignedModules} teacherName={teacherName} />
   );
 
-  const newsSection = <NewsAndUpdates key="news" />;
-
   let sections: React.ReactNode[];
   if (activeRole === "admin") {
-    sections = [essentialsSection, sliderSection, <Fragment key="reports">{reportsSection}</Fragment>, newsSection];
+    sections = [essentialsSection, sliderSection, <Fragment key="reports">{reportsSection}</Fragment>, <Fragment key="news">{newsSection}</Fragment>];
   } else if (activeRole === "teacher") {
     sections = [
       essentialsSection,
       assignedSection,
       sliderSection,
-      newsSection,
+      <Fragment key="news">{newsSection}</Fragment>,
     ].filter(Boolean);
   } else {
-    sections = [sliderSection, essentialsSection, modulesSection, newsSection];
+    sections = [sliderSection, essentialsSection, modulesSection, <Fragment key="news">{newsSection}</Fragment>];
   }
 
   return (

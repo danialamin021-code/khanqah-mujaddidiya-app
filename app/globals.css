@@ -32,8 +32,9 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* Dark mode: system preference or data-theme="dark" */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --background: #0f1412;
     --foreground: #e5e5e0;
     --deep-green: #3d7a5c;
@@ -46,6 +47,36 @@
     --nav-text: #ffffff;
     --nav-icon: #c9a44c;
   }
+}
+
+/* Manual dark override */
+:root[data-theme="dark"] {
+  --background: #0f1412;
+  --foreground: #e5e5e0;
+  --deep-green: #3d7a5c;
+  --muted-gold: #c9a44c;
+  --button-text: #ffffff;
+  --light-green: #1a2e2a;
+  --gold-hover: #d4b04a;
+  --green-soft: #243d38;
+  --nav-bg: #1f4d3a;
+  --nav-text: #ffffff;
+  --nav-icon: #c9a44c;
+}
+
+/* Manual light override (when system is dark) */
+:root[data-theme="light"] {
+  --background: #ffffff;
+  --foreground: #2b2b2b;
+  --deep-green: #1f4d3a;
+  --muted-gold: #c9a44c;
+  --button-text: #ffffff;
+  --light-green: #e6f2ec;
+  --gold-hover: #b08f3d;
+  --green-soft: #c5ddd2;
+  --nav-bg: #1f4d3a;
+  --nav-text: #ffffff;
+  --nav-icon: #c9a44c;
 }
 
 body {

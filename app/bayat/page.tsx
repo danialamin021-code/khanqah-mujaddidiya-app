@@ -1,13 +1,7 @@
 import Link from "next/link";
-import Image from "next/image";
+import SafeImage from "@/components/SafeImage";
 import BayatFormTrigger from "./BayatFormTrigger";
-
-/**
- * Bayat screen: explanation then Perform Bayat (form).
- * TODO: Form submission to backend; WhatsApp notification to Sheikh (UI placeholder only).
- * TODO: Replace header placeholder with soft, respectful image from /public/assets/.
- */
-const BAYAT_HEADER_IMAGE = "/assets/Modules/Bayat.png";
+import { BAYAT_HEADER_IMAGE } from "@/lib/constants/sheikh";
 
 export default function BayatPage() {
   return (
@@ -16,9 +10,8 @@ export default function BayatPage() {
         <Link href="/home" className="text-sm font-medium text-deep-green/80 hover:text-deep-green">
           ← Home
         </Link>
-        {/* Header image placeholder — soft, respectful. */}
         <div className="relative mt-4 aspect-[2/1] w-full overflow-hidden rounded-2xl bg-light-green/60 min-h-[8rem]">
-          <Image
+          <SafeImage
             src={BAYAT_HEADER_IMAGE}
             alt=""
             fill

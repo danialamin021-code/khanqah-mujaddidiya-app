@@ -27,7 +27,7 @@ interface AttendanceRow {
 }
 
 export default function AttendanceList({
-  moduleId,
+  moduleId: _moduleId,
   sessions,
   students,
   attendance,

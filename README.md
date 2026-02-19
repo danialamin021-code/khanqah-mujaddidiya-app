@@ -5,6 +5,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 - [Bootstrap First Director](docs/BOOTSTRAP_FIRST_DIRECTOR.md) – Creating the first Director in a new environment
 - [E2E Testing Checklist](docs/E2E_TESTING_CHECKLIST.md) – End-to-end testing guide
 - [Production Readiness](docs/PRODUCTION_READINESS.md) – Pre-launch checklist
+- [Phase 3 Deployment](docs/PHASE3_DEPLOYMENT.md) – Deploy to Vercel and production setup
 
 ## Getting Started
 

@@ -20,6 +20,8 @@ const NAV_GROUPS = [
       { href: "/admin/modules", label: "Modules" },
       { href: "/admin/paths", label: "Paths" },
       { href: "/admin/announcements", label: "Announcements" },
+      { href: "/admin/news", label: "News" },
+      { href: "/admin/events", label: "Events" },
       { href: "/admin/questions", label: "Questions" },
     ],
   },

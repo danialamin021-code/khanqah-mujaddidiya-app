@@ -1,6 +1,6 @@
 # Production Readiness Checklist
 
-Before deploying to production, verify the following.
+Before deploying to production, verify the following. See [PHASE3_DEPLOYMENT.md](./PHASE3_DEPLOYMENT.md) for deployment steps.
 
 ## Environment & Secrets
 

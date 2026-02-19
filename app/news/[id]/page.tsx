@@ -1,22 +1,10 @@
 import Link from "next/link";
+import { getPlatformNewsById } from "@/lib/data/platform-news";
 
-/** Placeholder detail — same static data as home list. Replace with API later. */
-const PLACEHOLDER_NEWS: Record<string, { title: string; excerpt: string; date: string; body: string }> = {
-  "1": {
-    title: "New Tafseer Session Schedule",
-    excerpt: "Updated timings for the weekly Tafseer module.",
-    date: "Feb 2025",
-    body: "Sessions now run every Saturday. Please check the module page for the weekly schedule. Enroll when you are ready.",
-  },
-  "2": {
-    title: "Bayat Guidance Update",
-    excerpt: "A short note on the importance of intention and readiness.",
-    date: "Jan 2025",
-    body: "Your intention should be sincere: to seek nearness to Allah, to follow the Sunnah, and to benefit from the guidance of the Sheikh. There is no compulsion; the step is yours when you are ready.",
-  },
-  "3": {
+const FALLBACK_NEWS: Record<string, { title: string; excerpt: string; date: string; body: string }> = {
+  welcome: {
     title: "Welcome to the Learning Portal",
-    excerpt: "Explore the nine modules and enroll when you are ready.",
+    excerpt: "Explore the modules and enroll when you are ready.",
     date: "Jan 2025",
     body: "Explore the nine modules and enroll when you are ready. No pressure — learn at your pace. Reach out via Contact if you have questions.",
   },
@@ -28,7 +16,15 @@ export default async function NewsDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const item = PLACEHOLDER_NEWS[id];
+  const dbItem = await getPlatformNewsById(id);
+  const item = dbItem
+    ? {
+        title: dbItem.title,
+        excerpt: dbItem.excerpt,
+        date: new Date(dbItem.published_at).toLocaleDateString("en", { dateStyle: "medium" }),
+        body: dbItem.body,
+      }
+    : FALLBACK_NEWS[id];
 
   if (!item) {
     return (

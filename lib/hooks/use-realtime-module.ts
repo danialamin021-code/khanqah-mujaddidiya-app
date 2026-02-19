@@ -93,7 +93,7 @@ export function useRealtimeModule(
   useEffect(() => {
     if (!moduleId) return;
 
-    fetchInitial();
+    queueMicrotask(() => fetchInitial());
 
     const supabase = createClient();
     if (!supabase) return;

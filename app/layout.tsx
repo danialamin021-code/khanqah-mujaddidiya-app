@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono, Lora } from "next/font/google";
 import { Toaster } from "sonner";
 import AppNav from "@/components/AppNav";
@@ -43,10 +44,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${lora.variable} antialiased`}
       >
+        <Script
+          id="theme-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var k='khanqah-theme';var v=localStorage.getItem(k);var r=v==='dark'?'dark':(v==='light'?'light':null);if(r){document.documentElement.setAttribute('data-theme',r);document.documentElement.classList.toggle('dark',r==='dark');}})();`,
+          }}
+        />
         <Toaster richColors position="top-center" closeButton />
         <ServiceWorkerRegistration />
         <SupabaseConfigBanner />

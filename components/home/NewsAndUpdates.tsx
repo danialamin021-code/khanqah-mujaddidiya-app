@@ -1,15 +1,24 @@
-"use client";
-
 import Link from "next/link";
+import { getPlatformNews } from "@/lib/data/platform-news";
 
-/** Static placeholder items — replace with API later. */
-const PLACEHOLDER_NEWS = [
-  { id: "1", title: "New Tafseer Session Schedule", excerpt: "Updated timings for the weekly Tafseer module. Sessions now run every Saturday.", date: "Feb 2025" },
-  { id: "2", title: "Bayat Guidance Update", excerpt: "A short note on the importance of intention and readiness before taking Bayat.", date: "Jan 2025" },
-  { id: "3", title: "Welcome to the Learning Portal", excerpt: "Explore the nine modules and enroll when you are ready. No pressure — learn at your pace.", date: "Jan 2025" },
+/** Fallback when DB has no news. */
+const FALLBACK_NEWS = [
+  { id: "welcome", title: "Welcome to the Learning Portal", excerpt: "Explore the modules and enroll when you are ready. No pressure — learn at your pace.", date: "Jan 2025" },
 ];
 
-export default function NewsAndUpdates() {
+export default async function NewsAndUpdates() {
+  const items = await getPlatformNews(10);
+
+  const displayItems =
+    items.length > 0
+      ? items.map((i) => ({
+          id: i.id,
+          title: i.title,
+          excerpt: i.excerpt,
+          date: new Date(i.published_at).toLocaleDateString("en", { month: "short", year: "numeric" }),
+        }))
+      : FALLBACK_NEWS.map((i) => ({ id: i.id, title: i.title, excerpt: i.excerpt, date: i.date }));
+
   return (
     <section className="border-t border-light-green bg-[var(--background)] px-4 py-8 md:py-10">
       <div className="mx-auto max-w-4xl">
@@ -20,7 +29,7 @@ export default function NewsAndUpdates() {
           Announcements and updates from the Khanqah.
         </p>
         <ul className="mt-6 space-y-4">
-          {PLACEHOLDER_NEWS.map((item) => (
+          {displayItems.map((item) => (
             <li key={item.id}>
               <Link
                 href={`/news/${item.id}`}

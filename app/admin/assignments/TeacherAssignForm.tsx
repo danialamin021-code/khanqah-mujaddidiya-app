@@ -19,8 +19,8 @@ export default function TeacherAssignForm({
 }) {
   const [pending, startTransition] = useTransition();
   const router = useRouter();
-  const module = modules.find((m) => m.slug === moduleSlug);
-  if (!module) return null;
+  const selectedModule = modules.find((m) => m.slug === moduleSlug);
+  if (!selectedModule) return null;
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -28,8 +28,8 @@ export default function TeacherAssignForm({
     const userId = (form.elements.namedItem("userId") as HTMLSelectElement)?.value;
     if (!userId) return;
     startTransition(async () => {
-      if (!module) return;
-      const res = await assignTeacher(module.id, userId);
+      if (!selectedModule) return;
+      const res = await assignTeacher(selectedModule.id, userId);
       if (res?.error) {
         toast.error(res.error);
         return;
@@ -41,7 +41,7 @@ export default function TeacherAssignForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <h3 className="font-heading text-lg font-normal text-deep-green">
-        Assign teacher to {module.title}
+        Assign teacher to {selectedModule.title}
       </h3>
       <div>
         <label className="block text-sm font-medium text-deep-green/90">Teacher</label>

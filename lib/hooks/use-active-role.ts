@@ -51,8 +51,6 @@ export function useActiveRole(): {
   loading: boolean;
 } {
   const { roles, loading } = useRoles();
-  const [activeRole, setActiveRoleState] = useState<ActiveRole>("student");
-
   const availableRoles = toActiveRoles(roles);
   const hasMultipleRoles = availableRoles.length > 1;
 
@@ -67,16 +65,24 @@ export function useActiveRole(): {
     return "student";
   }, [roles, availableRoles, hasMultipleRoles]);
 
+  const derived = effectiveRole();
+  const [userOverride, setUserOverride] = useState<ActiveRole | null>(null);
+  const activeRole = userOverride ?? derived;
+
   useEffect(() => {
-    if (loading) return;
-    const next = effectiveRole();
-    setActiveRoleState(next);
-    if (hasMultipleRoles) setStoredActiveRole(next);
-  }, [loading, effectiveRole, hasMultipleRoles]);
+    if (userOverride && !availableRoles.includes(userOverride)) {
+      queueMicrotask(() => setUserOverride(null));
+    }
+  }, [userOverride, availableRoles]);
+
+  useEffect(() => {
+    if (loading || !hasMultipleRoles) return;
+    setStoredActiveRole(derived);
+  }, [loading, hasMultipleRoles, derived]);
 
   const setActiveRole = useCallback((role: ActiveRole) => {
     setStoredActiveRole(role);
-    setActiveRoleState(role);
+    setUserOverride(role);
   }, []);
 
   return {

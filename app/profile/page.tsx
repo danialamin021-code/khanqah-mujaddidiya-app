@@ -85,6 +85,12 @@ export default async function ProfilePage() {
           )}
           <div className="mt-4 flex flex-wrap gap-3">
             <Link
+              href="/settings"
+              className="text-sm font-medium text-deep-green hover:underline"
+            >
+              Settings →
+            </Link>
+            <Link
               href="/dashboard"
               className="text-sm font-medium text-deep-green hover:underline"
             >

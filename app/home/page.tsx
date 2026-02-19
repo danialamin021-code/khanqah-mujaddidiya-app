@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getAssignedModulesForUser } from "@/lib/data/modules";
 import HomePageContent from "@/components/home/HomePageContent";
 import ReportsOverview from "@/components/home/ReportsOverview";
+import NewsAndUpdates from "@/components/home/NewsAndUpdates";
 
 /**
  * Primary dashboard. Role-specific layout: Student, Teacher, or Admin.
@@ -56,6 +57,7 @@ export default async function HomePage() {
       assignedModules={assignedModules}
       teacherName={teacherName}
       reportsSection={<ReportsOverview />}
+      newsSection={<NewsAndUpdates />}
     />
   );
 }

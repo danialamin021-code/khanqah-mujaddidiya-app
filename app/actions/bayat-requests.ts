@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentRole } from "@/lib/auth";
 import { logActivity } from "@/lib/utils/activity-logger";
+import { notifyRequestWebhook } from "@/lib/utils/notify-webhook";
 
 export interface BayatRequestInput {
   fullName: string;
@@ -47,6 +48,16 @@ export async function submitBayatRequest(
     entityId: data?.id,
     description: "Submitted Bayat request",
     metadata: {},
+  });
+
+  await notifyRequestWebhook({
+    type: "bayat",
+    id: data?.id ?? "",
+    fullName: input.fullName.trim(),
+    whatsapp: input.whatsapp.trim(),
+    country: input.country?.trim() || undefined,
+    city: input.city?.trim() || undefined,
+    submittedAt: new Date().toISOString(),
   });
 
   revalidatePath("/bayat");
