@@ -1,5 +1,13 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Deploy to Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdanialamin021-code%2Fkhanqah-mujaddidiya-app&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,NEXT_PUBLIC_CONTACT_PHONE,NEXT_PUBLIC_CONTACT_EMAIL,NEXT_PUBLIC_CONTACT_WHATSAPP&envDescription=Required%20for%20auth%20and%20data)
+
+1. Click the button above
+2. Add env vars (see [Phase 3 Deployment](docs/PHASE3_DEPLOYMENT.md))
+3. Deploy
+
 ## Documentation
 
 - [Bootstrap First Director](docs/BOOTSTRAP_FIRST_DIRECTOR.md) – Creating the first Director in a new environment

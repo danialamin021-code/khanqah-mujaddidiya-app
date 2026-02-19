@@ -18,16 +18,28 @@ Before deploying, ensure:
 
 ## 2. Deploy to Vercel
 
-### 2.1 Connect Repository
+### Option A: One-Click Deploy (Recommended)
+
+1. Click: **[Deploy with Vercel](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdanialamin021-code%2Fkhanqah-mujaddidiya-app)**
+2. Sign in with GitHub if prompted.
+3. Add environment variables (Step 2.2 below).
+4. Click **Deploy**.
+
+### Option B: Connect Repository Manually
 
 1. Push your code to GitHub.
 2. Go to [vercel.com](https://vercel.com) → **Add New Project**.
-3. Import your repository.
+3. Import `danialamin021-code/khanqah-mujaddidiya-app`.
 4. Framework preset: **Next.js** (auto-detected).
 
-### 2.2 Environment Variables
+### Option C: CLI Deploy
 
-Set these in Vercel → Project → Settings → Environment Variables:
+```powershell
+npx vercel login    # First time only
+.\scripts\vercel-deploy.ps1
+```
+
+Set these when importing or in Vercel → Project → Settings → Environment Variables:
 
 | Variable | Required | Notes |
 |----------|----------|-------|
@@ -42,14 +54,14 @@ Set these in Vercel → Project → Settings → Environment Variables:
 
 **Do not** add `SUPABASE_SERVICE_ROLE_KEY` to Vercel unless you have a server-side use case. Keep it local for `db:seed` only.
 
-### 2.3 Supabase Auth Redirect URLs
+### 2.2 Supabase Auth Redirect URLs
 
 In Supabase Dashboard → Authentication → URL Configuration:
 
 - **Site URL**: `https://your-app.vercel.app`
 - **Redirect URLs**: Add `https://your-app.vercel.app/**` and `https://your-app.vercel.app/auth/callback`
 
-### 2.4 Deploy
+### 2.3 Deploy
 
 Click **Deploy**. Vercel will build and deploy. Subsequent pushes to `main` trigger automatic deployments.
 
@@ -57,12 +69,19 @@ See `scripts/deploy-steps.md` for manual commit/push commands if needed.
 
 ---
 
-## 3. Post-Deployment
+## 3. Post-Deployment (Required)
 
-- [ ] Visit production URL and verify login/signup.
-- [ ] Test core flows: paths, enrollment, profile.
-- [ ] Confirm Supabase Auth redirects work (login → callback → dashboard).
-- [ ] Add Sentry DSN for error monitoring (optional).
+After your first deploy, get your URL (e.g. `https://khanqah-mujaddidiya-app.vercel.app`).
+
+**Update Supabase Auth:**
+1. Supabase Dashboard → Authentication → URL Configuration
+2. **Site URL**: `https://YOUR-APP.vercel.app`
+3. **Redirect URLs**: Add `https://YOUR-APP.vercel.app/**` and `https://YOUR-APP.vercel.app/auth/callback`
+
+**Test:**
+- [ ] Visit production URL and verify login/signup
+- [ ] Test paths, enrollment, profile, modules, admin
+- [ ] Confirm Auth redirects work (login → callback → dashboard)
 
 ---
 
