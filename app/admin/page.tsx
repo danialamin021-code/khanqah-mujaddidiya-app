@@ -7,25 +7,68 @@ import {
   getModulePerformance,
   getRiskAlerts,
 } from "@/lib/data/admin-analytics";
+import {
+  getAcademicOverview,
+  getParticipationAlerts,
+  getDirectorOverview,
+} from "@/lib/data/admin-batches";
+import { getUserRoles } from "@/lib/auth";
 
 export default async function AdminDashboardPage() {
-  const [stats, health, performance, alerts] = await Promise.all([
+  const roles = await getUserRoles();
+  const isDirector = roles.includes("director");
+
+  const [stats, health, performance, alerts, academicOverview, participationAlerts, directorOverview] = await Promise.all([
     getPlatformStats(),
     getPlatformAttendanceHealth(),
     getModulePerformance(),
     getRiskAlerts(),
+    getAcademicOverview(),
+    getParticipationAlerts(1, 10),
+    isDirector ? getDirectorOverview() : Promise.resolve(null),
   ]);
 
   return (
     <div className="space-y-8">
       <div>
         <h1 className="font-heading text-2xl font-normal text-deep-green">
-          Admin Dashboard
+          {isDirector ? "Director Dashboard" : "Admin Dashboard"}
         </h1>
         <p className="mt-2 text-sm text-foreground/70">
-          Overview, analytics, and quick actions for the platform.
+          {isDirector
+            ? "High-level overview of the platform."
+            : "Overview, analytics, and quick actions for the platform."}
         </p>
       </div>
+
+      {/* 0. Director high-level cards (when director) */}
+      {isDirector && directorOverview && (
+        <section className="rounded-2xl border border-green-soft bg-light-green/30 p-6">
+          <h2 className="font-heading text-lg font-normal text-deep-green">Overview</h2>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="rounded-xl border border-green-soft bg-[var(--background)] p-4">
+              <p className="text-sm font-medium text-deep-green/90">Total Students</p>
+              <p className="mt-1 text-2xl font-heading text-deep-green">{directorOverview.totalStudents}</p>
+            </div>
+            <div className="rounded-xl border border-green-soft bg-[var(--background)] p-4">
+              <p className="text-sm font-medium text-deep-green/90">Active Batches</p>
+              <p className="mt-1 text-2xl font-heading text-deep-green">{directorOverview.activeBatches}</p>
+            </div>
+            <div className="rounded-xl border border-green-soft bg-[var(--background)] p-4">
+              <p className="text-sm font-medium text-deep-green/90">Overall Attendance %</p>
+              <p className="mt-1 text-2xl font-heading text-deep-green">{directorOverview.overallAttendancePercent}%</p>
+            </div>
+            <div className="rounded-xl border border-green-soft bg-[var(--background)] p-4">
+              <p className="text-sm font-medium text-deep-green/90">Bayat Count</p>
+              <p className="mt-1 text-2xl font-heading text-deep-green">{directorOverview.bayatCount}</p>
+            </div>
+            <div className="rounded-xl border border-green-soft bg-[var(--background)] p-4">
+              <p className="text-sm font-medium text-deep-green/90">New Enrollments (30d)</p>
+              <p className="mt-1 text-2xl font-heading text-deep-green">{directorOverview.newEnrollmentsCount}</p>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* 1. Platform Stats */}
       <section>
@@ -90,6 +133,77 @@ export default async function AdminDashboardPage() {
           </div>
         </div>
       </section>
+
+      {/* 2b. Academic Overview (Batch System) */}
+      <section className="rounded-2xl border border-green-soft bg-light-green/30 p-6">
+        <h2 className="font-heading text-lg font-normal text-deep-green">
+          Academic Overview
+        </h2>
+        <p className="mt-1 text-sm text-foreground/70">
+          Batch-based academic system: batches, enrollments, attendance.
+        </p>
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <Link
+            href="/admin/batches"
+            className="rounded-xl border border-green-soft bg-[var(--background)] p-4 transition-colors hover:bg-light-green/50"
+          >
+            <p className="text-sm font-medium text-deep-green/90">Total Batches</p>
+            <p className="mt-1 text-2xl font-heading text-deep-green">{academicOverview.totalBatches}</p>
+          </Link>
+          <div className="rounded-xl border border-green-soft bg-[var(--background)] p-4">
+            <p className="text-sm font-medium text-deep-green/90">Active Batches</p>
+            <p className="mt-1 text-2xl font-heading text-deep-green">{academicOverview.activeBatches}</p>
+          </div>
+          <div className="rounded-xl border border-green-soft bg-[var(--background)] p-4">
+            <p className="text-sm font-medium text-deep-green/90">Avg Attendance %</p>
+            <p className="mt-1 text-2xl font-heading text-deep-green">{academicOverview.averageAttendancePercent}%</p>
+          </div>
+          <div className="rounded-xl border border-green-soft bg-[var(--background)] p-4">
+            <p className="text-sm font-medium text-deep-green/90">Batch Enrollments</p>
+            <p className="mt-1 text-2xl font-heading text-deep-green">{academicOverview.totalBatchEnrollments}</p>
+          </div>
+        </div>
+        <Link
+          href="/admin/batches"
+          className="mt-4 inline-block rounded-lg bg-muted-gold px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gold-hover"
+        >
+          Batch Management →
+        </Link>
+      </section>
+
+      {/* 2c. Participation Alerts (Students below 50%) */}
+      {participationAlerts.alerts.length > 0 && (
+        <section className="rounded-2xl border border-amber-500/40 bg-amber-500/10 p-6">
+          <h2 className="font-heading text-lg font-normal text-amber-800 dark:text-amber-200">
+            Participation Alerts
+          </h2>
+          <p className="mt-1 text-sm text-foreground/70">
+            Students below 50% attendance in a batch.
+          </p>
+          <ul className="mt-4 space-y-2">
+            {participationAlerts.alerts.map((a, i) => (
+              <li
+                key={i}
+                className="flex items-center justify-between rounded-lg border border-amber-500/30 bg-[var(--background)] px-4 py-3"
+              >
+                <span className="font-medium text-foreground/90">{a.fullName ?? "—"}</span>
+                <span className="text-sm text-foreground/70">{a.batchName}</span>
+                <span className="rounded px-2 py-0.5 text-xs font-medium bg-red-500/20 text-red-700 dark:text-red-400">
+                  {a.attendancePercentage}%
+                </span>
+              </li>
+            ))}
+          </ul>
+          {participationAlerts.totalCount > participationAlerts.alerts.length && (
+            <Link
+              href="/admin/batches?tab=alerts"
+              className="mt-4 inline-block text-sm font-medium text-amber-700 dark:text-amber-300 hover:underline"
+            >
+              View all {participationAlerts.totalCount} alerts →
+            </Link>
+          )}
+        </section>
+      )}
 
       {/* 3. Risk Alerts */}
       {alerts.length > 0 && (

@@ -57,7 +57,19 @@ export default async function TeacherDashboardPage() {
           : "Modules assigned to you."}
       </p>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <section className="mt-8">
+        <h2 className="font-heading text-lg font-normal text-deep-green mb-4">My Batches</h2>
+        <Link
+          href="/teacher/batches"
+          className="inline-block rounded-lg border border-green-soft bg-light-green/50 px-4 py-2 text-sm font-medium text-deep-green transition-colors hover:bg-light-green"
+        >
+          View Batches →
+        </Link>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="font-heading text-lg font-normal text-deep-green mb-4">Modules</h2>
+      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {modulesToShow.length === 0 ? (
           <div className="col-span-full rounded-2xl border border-green-soft bg-light-green/40 p-6">
             <p className="text-foreground/80">
@@ -96,6 +108,7 @@ export default async function TeacherDashboardPage() {
           })
         )}
       </div>
+      </section>
     </div>
   );
 }

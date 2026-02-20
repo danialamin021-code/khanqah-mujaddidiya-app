@@ -3,10 +3,10 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { logoutAndClearTokens } from "@/app/actions/logout";
 
 /**
- * Logout button. Signs out and redirects to home.
- * Local test: click Log out → redirect to /home; nav shows "Log in".
+ * Logout button. Clears push tokens, signs out, redirects to home.
  */
 export default function LogoutButton() {
   const router = useRouter();
@@ -14,6 +14,7 @@ export default function LogoutButton() {
 
   async function handleLogout() {
     setLoading(true);
+    await logoutAndClearTokens();
     const supabase = createClient();
     if (supabase) {
       await supabase.auth.signOut();

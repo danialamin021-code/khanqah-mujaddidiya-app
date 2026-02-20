@@ -52,6 +52,8 @@ export function checkRateLimit(
 /** Rate limit configs per action type. */
 export const RATE_LIMITS = {
   enrollment: { max: 10, windowMs: 60_000 },      // 10 per minute
+  batch_enrollment: { max: 10, windowMs: 60_000 }, // 10 per minute
   bayat: { max: 3, windowMs: 3600_000 },         // 3 per hour
   guidance: { max: 5, windowMs: 3600_000 },      // 5 per hour
+  attendance_marking: { max: 100, windowMs: 60_000 }, // 100 per minute (bulk marking)
 } as const;

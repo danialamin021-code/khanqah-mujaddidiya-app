@@ -7,7 +7,9 @@ import type { ModuleSlug } from "@/lib/constants/modules";
 import { getModuleBySlug } from "@/lib/data/modules";
 import { getActiveRoleForServer, getAssignedModuleIds } from "@/lib/auth";
 import ModuleEnrollButton from "./ModuleEnrollButton";
+import ModuleBatchesSection from "./ModuleBatchesSection";
 import { LiveSessionsBlock } from "@/components/LiveSessionsBlock";
+import { getActiveBatchesForModule } from "@/lib/data/batches";
 import ModuleTeacherCard from "@/components/ModuleTeacherCard";
 
 const PLACEHOLDER_DESCRIPTION: Record<ModuleSlug, string> = {
@@ -43,7 +45,7 @@ export default async function ModulePage({
   const module_ = LEARNING_MODULES.find((m) => m.slug === slug);
   if (!module_) notFound();
 
-  const [dbModule, activeRole, assignedIds, sessionsRes, isEnrolled] = await Promise.all([
+  const [dbModule, activeRole, assignedIds, sessionsRes, isEnrolled, moduleBatches] = await Promise.all([
     getModuleBySlug(slug),
     getActiveRoleForServer(),
     getAssignedModuleIds(),
@@ -74,6 +76,11 @@ export default async function ModulePage({
         .eq("user_id", user.id)
         .maybeSingle();
       return !!data;
+    })(),
+    (async () => {
+      const mod = await getModuleBySlug(slug);
+      if (!mod) return [];
+      return getActiveBatchesForModule(mod.id);
     })(),
   ]);
   const moduleId = dbModule?.id ?? null;
@@ -215,6 +222,8 @@ export default async function ModulePage({
             </div>
           </section>
         )}
+
+        <ModuleBatchesSection batches={moduleBatches.map((b) => ({ id: b.id, name: b.name }))} />
 
         <div className="mt-10">
           <ModuleEnrollButton
