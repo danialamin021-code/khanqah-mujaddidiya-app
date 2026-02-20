@@ -8,7 +8,7 @@ import type { BatchRow } from "@/lib/data/batches";
 
 export default function BatchEditForm({
   batch,
-  modules,
+  modules: _modules,
   teachers,
 }: {
   batch: BatchRow;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 /**
  * Generates placeholder PNG assets for the mobile app.
  * Run: node scripts/generate-placeholder-assets.js

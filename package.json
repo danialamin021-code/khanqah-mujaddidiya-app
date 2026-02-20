@@ -16,7 +16,7 @@
     "validate-env": "tsx scripts/validate-env.ts"
   },
   "dependencies": {
-    "@sentry/nextjs": "^10.39.0",
+    "@sentry/nextjs": "^9.20.0",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.95.3",
     "lucide-react": "^0.460.0",
@@ -34,12 +34,12 @@
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^4.3.4",
     "dotenv": "^16.4.5",
-    "eslint": "^9",
-    "eslint-config-next": "16.1.6",
+    "eslint": "^4.1.1",
+    "eslint-config-next": "^0.2.4",
     "jsdom": "^25.0.1",
     "tailwindcss": "^4",
     "tsx": "^4.19.2",
     "typescript": "^5",
-    "vitest": "^2.1.6"
+    "vitest": "^4.0.18"
   }
 }

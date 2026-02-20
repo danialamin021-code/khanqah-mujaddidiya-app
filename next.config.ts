@@ -4,6 +4,7 @@ import path from "path";
 // Sentry is optional; only used when DSN is set and package is installed
 let withSentryConfig: (config: NextConfig, opts: object) => NextConfig = (c) => c;
 try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   withSentryConfig = require("@sentry/nextjs").withSentryConfig;
 } catch {
   // @sentry/nextjs not installed

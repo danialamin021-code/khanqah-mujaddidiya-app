@@ -59,7 +59,7 @@ export function ActiveRoleProvider({
 
   useEffect(() => {
     if (userOverride && !availableRoles.includes(userOverride)) {
-      setUserOverride(null);
+      queueMicrotask(() => setUserOverride(null));
     }
   }, [userOverride, availableRoles]);
 

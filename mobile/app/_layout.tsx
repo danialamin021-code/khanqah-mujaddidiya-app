@@ -1,12 +1,9 @@
 import { Stack } from "expo-router";
 import { useEffect } from "react";
-import { useRouter } from "expo-router";
 import { supabase } from "../src/services/supabase";
 import { registerForPushNotifications } from "../src/services/push";
 
 export default function RootLayout() {
-  const router = useRouter();
-
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {

@@ -6,7 +6,7 @@ import { markBatchAttendance } from "@/lib/actions/batch-attendance";
 import type { BatchSessionRow } from "@/lib/data/batches";
 
 export default function BatchAttendanceMarking({
-  batchId,
+  batchId: _batchId,
   sessions,
   enrollments,
 }: {

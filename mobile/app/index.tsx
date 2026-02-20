@@ -14,7 +14,7 @@ export default function Index() {
         router.replace("/(auth)/login");
       }
     });
-  }, []);
+  }, [router]);
 
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#1a3c34" }}>
