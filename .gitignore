@@ -62,6 +62,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# mobile app (separate project; excluded from web build)
+/mobile
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

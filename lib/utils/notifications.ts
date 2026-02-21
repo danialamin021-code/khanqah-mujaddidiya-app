@@ -1,9 +1,8 @@
 /**
- * In-platform notifications. Uses service client to bypass RLS.
- * Call only from trusted server actions.
+ * In-platform notification types. Creation moved to notification-engine Edge Function.
+ * @deprecated createNotification/createNotificationsForUsers — use Edge Function.
  */
 
-import { createServiceClient } from "@/lib/supabase/server";
 
 export type NotificationType =
   // Student
@@ -40,46 +39,20 @@ export interface CreateNotificationParams {
 }
 
 /**
- * Create a notification for a user. Uses service client.
+ * @deprecated All notification creation moved to notification-engine Edge Function.
+ * Use invokeNotificationEngine or invokeNotificationEngineCreateRoleRequest.
+ * Direct DB inserts from Next.js are prohibited.
  */
-export async function createNotification(params: CreateNotificationParams): Promise<string | null> {
-  const supabase = createServiceClient();
-  if (!supabase) return null;
-
-  const { data, error } = await supabase
-    .from("notifications")
-    .insert({
-      user_id: params.userId,
-      type: params.type,
-      title: params.title,
-      body: params.body ?? null,
-      metadata: params.metadata ?? {},
-    })
-    .select("id")
-    .single();
-
-  if (error) {
-    if (process.env.NODE_ENV === "development") {
-      console.error("[notifications] createNotification error:", error);
-    }
-    return null;
-  }
-  return data?.id ?? null;
+export async function createNotification(_params: CreateNotificationParams): Promise<string | null> {
+  throw new Error("createNotification is deprecated. Use notification-engine Edge Function.");
 }
 
 /**
- * Create notifications for multiple users.
+ * @deprecated Use notification-engine Edge Function.
  */
 export async function createNotificationsForUsers(
-  userIds: string[],
-  params: Omit<CreateNotificationParams, "userId">
+  _userIds: string[],
+  _params: Omit<CreateNotificationParams, "userId">
 ): Promise<void> {
-  await Promise.all(
-    userIds.map((userId) =>
-      createNotification({
-        ...params,
-        userId,
-      })
-    )
-  );
+  throw new Error("createNotificationsForUsers is deprecated. Use notification-engine Edge Function.");
 }

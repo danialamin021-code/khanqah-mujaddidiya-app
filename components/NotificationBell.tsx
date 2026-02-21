@@ -8,8 +8,8 @@ import {
   getUnreadCount,
   markNotificationRead,
   markAllNotificationsRead,
-  type NotificationRow,
 } from "@/app/actions/notifications";
+import type { NotificationRow } from "@/lib/data/notifications";
 
 function formatTimeAgo(dateStr: string): string {
   const d = new Date(dateStr);
