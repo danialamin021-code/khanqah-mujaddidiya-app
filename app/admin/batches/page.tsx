@@ -29,6 +29,19 @@ export default async function AdminBatchesPage() {
     .eq("is_archived", false);
 
   const moduleMap = new Map((modules ?? []).map((m) => [(m as { id: string }).id, (m as { title: string }).title]));
+  const batchesByModule = new Map<string, typeof batchesData.batches>();
+  for (const b of batchesData.batches) {
+    const list = batchesByModule.get(b.module_id) ?? [];
+    list.push(b);
+    batchesByModule.set(b.module_id, list);
+  }
+
+  const moduleList = (modules ?? []) as { id: string; title: string }[];
+  const moduleIdsWithBatches = new Set(batchesByModule.keys());
+  const orderedModuleIds = [
+    ...moduleList.filter((m) => moduleIdsWithBatches.has(m.id)).map((m) => m.id),
+    ...Array.from(moduleIdsWithBatches).filter((id) => !moduleList.some((m) => m.id === id)),
+  ];
 
   return (
     <div className="space-y-8">
@@ -50,45 +63,54 @@ export default async function AdminBatchesPage() {
         {batchesData.batches.length === 0 ? (
           <p className="mt-4 text-sm text-foreground/70">No batches yet.</p>
         ) : (
-          <div className="mt-4 overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-green-soft bg-light-green/60">
-                  <th className="px-4 py-3 text-left font-medium text-deep-green">Batch</th>
-                  <th className="px-4 py-3 text-left font-medium text-deep-green">Module</th>
-                  <th className="px-4 py-3 text-left font-medium text-deep-green">Teacher</th>
-                  <th className="px-4 py-3 text-left font-medium text-deep-green">WhatsApp</th>
-                  <th className="px-4 py-3 text-left font-medium text-deep-green">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-[var(--background)]">
-                {batchesData.batches.map((b) => (
-                  <tr key={b.id} className="border-b border-green-soft/80 last:border-0">
-                    <td className="px-4 py-3 font-medium text-deep-green/90">{b.name}</td>
-                    <td className="px-4 py-3 text-foreground/90">{moduleMap.get(b.module_id) ?? "—"}</td>
-                    <td className="px-4 py-3 text-foreground/90">{b.teacher_id ? "Assigned" : "—"}</td>
-                    <td className="px-4 py-3 text-foreground/90">{b.whatsapp_group_link ? "Yes" : "—"}</td>
-                    <td className="px-4 py-3">
-                      <Link
-                        href={`/admin/batches/${b.id}`}
-                        className="text-sm font-medium text-deep-green hover:underline"
-                      >
-                        Edit
-                      </Link>
-                      <span className="mx-2 text-foreground/50">|</span>
-                      <Link
-                        href={`/teacher/batches/${b.id}`}
-                        className="text-sm font-medium text-deep-green hover:underline"
-                      >
-                        View
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="mt-6 space-y-6">
+            {orderedModuleIds.map((moduleId) => {
+              const modBatches = batchesByModule.get(moduleId) ?? [];
+              const moduleTitle = moduleMap.get(moduleId) ?? "Other";
+              return (
+                <div key={moduleId} className="rounded-xl border border-green-soft/60 bg-[var(--background)] p-4">
+                  <h3 className="font-heading text-base font-normal text-deep-green">{moduleTitle}</h3>
+                  <div className="mt-3 overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-green-soft/60">
+                          <th className="px-4 py-2 text-left font-medium text-deep-green/90">Batch</th>
+                          <th className="px-4 py-2 text-left font-medium text-deep-green/90">Teacher</th>
+                          <th className="px-4 py-2 text-left font-medium text-deep-green/90">WhatsApp</th>
+                          <th className="px-4 py-2 text-left font-medium text-deep-green/90">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {modBatches.map((b) => (
+                          <tr key={b.id} className="border-b border-green-soft/40 last:border-0">
+                            <td className="px-4 py-2 font-medium text-deep-green/90">{b.name}</td>
+                            <td className="px-4 py-2 text-foreground/90">{b.teacher_id ? "Assigned" : "—"}</td>
+                            <td className="px-4 py-2 text-foreground/90">{b.whatsapp_group_link ? "Yes" : "—"}</td>
+                            <td className="px-4 py-2">
+                              <Link
+                                href={`/admin/batches/${b.id}`}
+                                className="text-sm font-medium text-deep-green hover:underline"
+                              >
+                                Edit
+                              </Link>
+                              <span className="mx-2 text-foreground/50">|</span>
+                              <Link
+                                href={`/teacher/batches/${b.id}`}
+                                className="text-sm font-medium text-deep-green hover:underline"
+                              >
+                                View
+                              </Link>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              );
+            })}
             {batchesData.totalCount > batchesData.batches.length && (
-              <p className="mt-2 text-xs text-foreground/70">
+              <p className="text-xs text-foreground/70">
                 Showing {batchesData.batches.length} of {batchesData.totalCount}
               </p>
             )}

@@ -23,6 +23,7 @@ import {
   UserCog,
   BookMarked,
   Heart,
+  Bell,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -44,7 +45,6 @@ export const BOTTOM_NAV_STUDENT: NavItem[] = [
 export const BOTTOM_NAV_TEACHER: NavItem[] = [
   { href: "/home", label: "Home", Icon: Home },
   { href: "/teacher", label: "Teacher", Icon: LayoutDashboard },
-  { href: "/batches", label: "Batches", Icon: BookMarked },
   { href: "/profile", label: "Profile", Icon: User },
 ];
 
@@ -59,8 +59,8 @@ export const BOTTOM_NAV_ADMIN: NavItem[] = [
 
 /** Student hamburger items. */
 export const MENU_STUDENT: NavItem[] = [
+  { href: "/notifications", label: "Notifications", Icon: Bell },
   { href: "/modules", label: "Learning Modules", Icon: Compass },
-  { href: "/batches", label: "Academic Batches", Icon: BookMarked },
   { href: "/dashboard", label: "My Progress", Icon: BarChart3 },
   { href: "/questions", label: "My questions", Icon: MessageCircle },
   { href: "/guidance", label: "Guidance", Icon: BookOpen },
@@ -73,6 +73,7 @@ export const MENU_STUDENT: NavItem[] = [
 
 /** Teacher hamburger items (exclusive when activeRole = teacher). */
 export const MENU_TEACHER: NavItem[] = [
+  { href: "/notifications", label: "Notifications", Icon: Bell },
   { href: "/teacher", label: "Teacher Dashboard", Icon: LayoutDashboard },
   { href: "/dashboard", label: "My Progress", Icon: BarChart3 },
   { href: "/teacher/sessions", label: "Sessions", Icon: Calendar },
@@ -85,8 +86,8 @@ export const MENU_TEACHER: NavItem[] = [
 
 /** Admin hamburger items (exclusive when activeRole = admin). */
 export const MENU_ADMIN: NavItem[] = [
+  { href: "/notifications", label: "Notifications", Icon: Bell },
   { href: "/admin", label: "Dashboard", Icon: LayoutDashboard },
-  { href: "/admin/batches", label: "Batches", Icon: Users },
   { href: "/admin/users", label: "Users", Icon: UserCog },
   { href: "/admin/modules", label: "Modules", Icon: BookMarked },
   { href: "/admin/assignments", label: "Teacher Assignment", Icon: Users },

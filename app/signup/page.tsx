@@ -6,6 +6,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import AuthOnboardingBackground from "@/components/AuthOnboardingBackground";
+import { notifyRoleRequest } from "@/app/actions/notifications";
 
 /** Same logo as onboarding — prominent and recognizable. */
 const LOGO_SRC = "/assets/common/onboardingauthlogo.png";
@@ -67,6 +68,7 @@ export default function SignUpPage() {
               role_request: role === "teacher" ? "pending_teacher" : "pending_admin",
             })
             .eq("id", data.user.id);
+          await notifyRoleRequest(role as "teacher" | "admin", email);
         }
       }
       // Redirect if confirmed (e.g. email confirmation disabled) or if we have a session

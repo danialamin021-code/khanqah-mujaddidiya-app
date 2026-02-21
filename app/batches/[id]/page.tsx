@@ -35,19 +35,28 @@ export default async function BatchPage({ params }: { params: Promise<{ id: stri
   const isEnrolled = enrollment !== null && enrollment.enrollment_status === "active";
   const { data: mod } = await supabase
     .from("modules")
-    .select("slug")
+    .select("slug, title")
     .eq("id", batch.module_id)
     .single();
   const moduleSlug = (mod as { slug?: string } | null)?.slug ?? "modules";
+  const moduleTitle = (mod as { title?: string } | null)?.title ?? "Module";
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-8">
-      <Link
-        href={`/modules/${moduleSlug}`}
-        className="text-sm font-medium text-deep-green/80 hover:text-deep-green"
-      >
-        ← Back to module
-      </Link>
+      <nav className="flex items-center gap-2 text-sm text-foreground/70" aria-label="Breadcrumb">
+        <Link href="/modules" className="font-medium text-deep-green/80 hover:text-deep-green">
+          Modules
+        </Link>
+        <span aria-hidden>/</span>
+        <Link
+          href={`/modules/${moduleSlug}`}
+          className="font-medium text-deep-green/80 hover:text-deep-green"
+        >
+          {moduleTitle}
+        </Link>
+        <span aria-hidden>/</span>
+        <span className="font-medium text-deep-green">{batch.name}</span>
+      </nav>
 
       <section className="mt-6 rounded-2xl border border-green-soft bg-light-green/50 p-6">
         <h1 className="font-heading text-2xl font-normal text-deep-green">{batch.name}</h1>

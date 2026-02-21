@@ -6,6 +6,8 @@ import { getCurrentRole } from "@/lib/auth";
 import { logActivity } from "@/lib/utils/activity-logger";
 import { notifyRequestWebhook } from "@/lib/utils/notify-webhook";
 import { checkRateLimit, RATE_LIMITS } from "@/lib/utils/rate-limit";
+import { createNotification } from "@/lib/utils/notifications";
+import { getDirectorIds } from "@/lib/utils/notification-targets";
 
 export interface BayatRequestInput {
   fullName: string;
@@ -65,6 +67,19 @@ export async function submitBayatRequest(
     city: input.city?.trim() || undefined,
     submittedAt: new Date().toISOString(),
   });
+
+  const directorIds = await getDirectorIds();
+  await Promise.all(
+    directorIds.map((uid) =>
+      createNotification({
+        userId: uid,
+        type: "bayat_request",
+        title: "New Bayat request",
+        body: `${input.fullName.trim()} has submitted a Bayat request.`,
+        metadata: { requestId: data?.id, requestType: "bayat" },
+      })
+    )
+  );
 
   revalidatePath("/bayat");
   revalidatePath("/guidance");

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { enrollInModule } from "@/app/actions/module-enrollment";
+import { enrollInBatch } from "@/lib/actions/batch-enrollment";
 import { enrollFormSchema } from "@/lib/validations/enroll";
 
 const NIYAH_TEXT =
@@ -12,31 +12,42 @@ const COUNTRY_OPTIONS = ["Select country", "Pakistan", "United Kingdom", "United
 const CITY_OPTIONS = ["Select city", "Lahore", "Karachi", "London", "New York", "Other"];
 
 /**
- * Enroll form modal. Persists enrollment to module_enrollments.
+ * Enroll form modal for a module. User selects a batch, then submits.
+ * Persists enrollment to batch_enrollments.
  */
 export default function EnrollModal({
   moduleName,
-  moduleId,
+  batches,
   onClose,
   onSuccess,
 }: {
   moduleName: string;
-  moduleId: string;
+  batches: { id: string; name: string; whatsapp_group_link?: string | null }[];
   onClose: () => void;
   onSuccess?: () => void;
 }) {
   const [submitted, setSubmitted] = useState(false);
+  const [submittedBatchName, setSubmittedBatchName] = useState<string | null>(null);
+  const [submittedWhatsAppLink, setSubmittedWhatsAppLink] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [batchId, setBatchId] = useState(batches[0]?.id ?? "");
   const [fullName, setFullName] = useState("");
   const [whatsApp, setWhatsApp] = useState("");
   const [country, setCountry] = useState("");
   const [city, setCity] = useState("");
   const [niyahChecked, setNiyahChecked] = useState(false);
 
+  const canEnroll = batches.length > 0;
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+
+    if (!canEnroll || !batchId) {
+      setError("No batch selected. Please select a batch.");
+      return;
+    }
 
     const parsed = enrollFormSchema.safeParse({
       fullName,
@@ -60,13 +71,16 @@ export default function EnrollModal({
 
     setLoading(true);
     try {
-      const result = await enrollInModule(moduleId, {
+      const result = await enrollInBatch(batchId, {
         fullName: parsed.data.fullName,
         whatsapp: parsed.data.whatsapp,
         country: parsed.data.country,
         city: parsed.data.city,
       });
       if (result.success) {
+        const batch = batches.find((b) => b.id === batchId);
+        setSubmittedBatchName(batch?.name ?? null);
+        setSubmittedWhatsAppLink(batch?.whatsapp_group_link ?? null);
         setSubmitted(true);
         onSuccess?.();
       } else {
@@ -88,8 +102,44 @@ export default function EnrollModal({
         >
           <p className="font-heading text-lg font-normal text-deep-green">Enrollment successful</p>
           <p className="mt-2 text-sm text-foreground/80">
-            You are now enrolled in {moduleName}. You can access module content and sessions from your dashboard.
+            You are now enrolled in {moduleName}
+            {submittedBatchName ? ` — ${submittedBatchName}` : ""}. You can access sessions and content from your dashboard.
           </p>
+          {submittedWhatsAppLink && (
+            <div className="mt-4 rounded-lg border border-green-soft bg-light-green/30 p-4">
+              <p className="text-sm font-medium text-deep-green/90">WhatsApp Group</p>
+              <a
+                href={submittedWhatsAppLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 block truncate text-sm text-muted-gold hover:underline"
+              >
+                {submittedWhatsAppLink}
+              </a>
+              <p className="mt-2 text-xs text-foreground/70">Join the group to stay updated.</p>
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={onClose}
+            className="mt-6 w-full rounded-lg bg-muted-gold py-2.5 text-sm font-medium text-white transition-colors hover:bg-gold-hover"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!canEnroll) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
+        <div
+          className="w-full max-w-md rounded-2xl border border-green-soft bg-[var(--background)] p-6 shadow-lg"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h2 className="font-heading text-lg font-normal text-deep-green">Enroll — {moduleName}</h2>
+          <p className="mt-4 text-sm text-foreground/80">No batches are available for this module yet. Please check back later.</p>
           <button
             type="button"
             onClick={onClose}
@@ -112,6 +162,25 @@ export default function EnrollModal({
           Enroll — {moduleName}
         </h2>
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+          <div>
+            <label htmlFor="enroll-batch" className="block text-sm font-medium text-deep-green/90">
+              Select batch <span className="text-foreground/60">(required)</span>
+            </label>
+            <select
+              id="enroll-batch"
+              required
+              value={batchId}
+              onChange={(e) => setBatchId(e.target.value)}
+              className="mt-1 w-full rounded-lg border border-green-soft bg-[var(--background)] px-3 py-2 text-foreground"
+            >
+              <option value="">Choose a batch…</option>
+              {batches.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name}
+                </option>
+              ))}
+            </select>
+          </div>
           <div>
             <label htmlFor="enroll-name" className="block text-sm font-medium text-deep-green/90">
               Full Name <span className="text-foreground/60">(required)</span>

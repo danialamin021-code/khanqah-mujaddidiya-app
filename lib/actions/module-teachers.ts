@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin, getCurrentRole } from "@/lib/auth";
 import { logActivity } from "@/lib/utils/activity-logger";
+import { createNotification } from "@/lib/utils/notifications";
 
 export async function assignTeacher(moduleId: string, userId: string) {
   const ok = await requireAdmin();
@@ -23,6 +24,15 @@ export async function assignTeacher(moduleId: string, userId: string) {
   });
 
   if (error) return { error: error.message };
+
+  const { data: mod } = await supabase
+    .from("modules")
+    .select("title, slug")
+    .eq("id", moduleId)
+    .single();
+  const moduleTitle = (mod as { title?: string } | null)?.title ?? "a module";
+  const moduleSlug = (mod as { slug?: string } | null)?.slug ?? "";
+
   const actorRole = (await getCurrentRole()) ?? "admin";
   await logActivity({
     actorId: user.id,
@@ -33,6 +43,15 @@ export async function assignTeacher(moduleId: string, userId: string) {
     description: "Assigned teacher to module",
     metadata: { teacherUserId: userId },
   });
+
+  await createNotification({
+    userId,
+    type: "module_assignment",
+    title: "Module assignment",
+    body: `You have been assigned to teach ${moduleTitle}.`,
+    metadata: { moduleId, moduleSlug },
+  });
+
   revalidatePath("/admin");
   revalidatePath("/admin/assignments");
   revalidatePath("/admin/modules");

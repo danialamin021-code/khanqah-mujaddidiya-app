@@ -70,7 +70,7 @@ SELECT
          FROM public.batch_enrollments WHERE created_at >= CURRENT_DATE - INTERVAL '12 months' GROUP BY 1) t) AS monthly_enrollment_trend,
   COALESCE((SELECT (COUNT(*) FILTER (WHERE completion_status = 'completed'))::numeric / NULLIF(COUNT(*) FILTER (WHERE completion_status IN ('completed','failed')), 0) * 100
             FROM public.batch_enrollments), 0)::numeric(5,2) AS completion_rate,
-  COALESCE((SELECT (COUNT(*) FILTER (WHERE completion_status = 'failed'))::numeric / NULLIF(COUNT(*), 0) * 100
+  COALESCE((SELECT (COUNT(*) FILTER (WHERE completion_status = 'failed'))::numeric / NULLIF(COUNT(*) FILTER (WHERE completion_status IN ('completed','failed')), 0) * 100
             FROM public.batch_enrollments), 0)::numeric(5,2) AS dropout_rate;
 
 -- RLS: Materialized views don't support RLS. Use SECURITY DEFINER functions for safe access.

@@ -6,17 +6,15 @@ import EnrollModal from "@/components/EnrollModal";
 
 export default function ModuleEnrollButton({
   moduleName,
-  moduleId,
+  batches,
   isEnrolled,
 }: {
   moduleName: string;
-  moduleId: string | null;
+  batches: { id: string; name: string; whatsapp_group_link?: string | null }[];
   isEnrolled: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
-
-  if (!moduleId) return null;
 
   if (isEnrolled) {
     return (
@@ -38,7 +36,7 @@ export default function ModuleEnrollButton({
       {open && (
         <EnrollModal
           moduleName={moduleName}
-          moduleId={moduleId}
+          batches={batches}
           onClose={() => setOpen(false)}
           onSuccess={() => {
             setOpen(false);

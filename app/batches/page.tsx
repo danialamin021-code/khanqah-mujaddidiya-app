@@ -49,17 +49,19 @@ export default async function BatchesPage() {
               className="rounded-2xl border border-green-soft bg-light-green/30 p-6"
             >
               <h2 className="font-heading text-lg font-normal text-deep-green">{mod.title}</h2>
-              <div className="mt-4 flex flex-wrap gap-3">
+              <ul className="mt-4 space-y-2">
                 {batches.map((b) => (
-                  <Link
-                    key={b.id}
-                    href={`/batches/${b.id}`}
-                    className="rounded-lg border border-green-soft bg-[var(--background)] px-4 py-2 text-sm font-medium text-deep-green transition-colors hover:bg-light-green/50"
-                  >
-                    {b.name}
-                  </Link>
+                  <li key={b.id}>
+                    <Link
+                      href={`/batches/${b.id}`}
+                      className="flex items-center gap-2 rounded-lg border border-green-soft bg-[var(--background)] pl-6 pr-4 py-2 text-sm font-medium text-deep-green transition-colors hover:bg-light-green/50"
+                    >
+                      <span className="text-foreground/60" aria-hidden>——</span>
+                      {b.name}
+                    </Link>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </section>
           ))}
         </div>

@@ -69,11 +69,20 @@ export default async function ModulePage({
       if (!supabase) return false;
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return false;
-      const { data } = await supabase
-        .from("module_enrollments")
+      const { data: batches } = await supabase
+        .from("batches")
         .select("id")
         .eq("module_id", mod.id)
+        .eq("is_active", true);
+      const batchIds = (batches ?? []).map((b) => (b as { id: string }).id);
+      if (batchIds.length === 0) return false;
+      const { data } = await supabase
+        .from("batch_enrollments")
+        .select("id")
         .eq("user_id", user.id)
+        .eq("enrollment_status", "active")
+        .in("batch_id", batchIds)
+        .limit(1)
         .maybeSingle();
       return !!data;
     })(),
@@ -223,12 +232,24 @@ export default async function ModulePage({
           </section>
         )}
 
-        <ModuleBatchesSection batches={moduleBatches.map((b) => ({ id: b.id, name: b.name }))} />
+        <ModuleBatchesSection
+          batches={moduleBatches.map((b) => ({
+            id: b.id,
+            name: b.name,
+            description: b.description,
+            start_date: b.start_date,
+            end_date: b.end_date,
+          }))}
+        />
 
         <div className="mt-10">
           <ModuleEnrollButton
             moduleName={module_.name}
-            moduleId={moduleId}
+            batches={moduleBatches.map((b) => ({
+              id: b.id,
+              name: b.name,
+              whatsapp_group_link: b.whatsapp_group_link,
+            }))}
             isEnrolled={isEnrolled}
           />
         </div>

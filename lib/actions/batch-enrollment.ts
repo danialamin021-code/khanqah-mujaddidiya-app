@@ -74,8 +74,9 @@ export async function enrollInBatch(
 
   const batchName = (batch as { name: string }).name;
 
-  const notifyUserIds: string[] = [];
-  if (batch.teacher_id) notifyUserIds.push(batch.teacher_id);
+  const teacherIds: string[] = [];
+  const adminIds: string[] = [];
+  if (batch.teacher_id) teacherIds.push(batch.teacher_id);
 
   const serviceClient = createServiceClient();
   if (serviceClient) {
@@ -85,7 +86,7 @@ export async function enrollInBatch(
       .or("roles.cs.{admin},roles.cs.{director}");
     if (adminProfiles) {
       for (const p of adminProfiles) {
-        if (p.id && !notifyUserIds.includes(p.id)) notifyUserIds.push(p.id);
+        if (p.id && !teacherIds.includes(p.id as string)) adminIds.push(p.id as string);
       }
     }
   }
@@ -98,10 +99,19 @@ export async function enrollInBatch(
       body: `Welcome to ${batchName}.`,
       metadata: { batchId },
     }),
-    ...notifyUserIds.map((uid) =>
+    ...teacherIds.map((uid) =>
       createNotification({
         userId: uid,
-        type: "batch_enrollment",
+        type: "new_enrollment",
+        title: "New batch enrollment",
+        body: `A student enrolled in ${batchName}.`,
+        metadata: { batchId, studentId: user.id },
+      })
+    ),
+    ...adminIds.map((uid) =>
+      createNotification({
+        userId: uid,
+        type: "enrollment_new",
         title: "New batch enrollment",
         body: `A student enrolled in ${batchName}.`,
         metadata: { batchId, studentId: user.id },
@@ -111,6 +121,7 @@ export async function enrollInBatch(
 
   revalidatePath("/batches");
   revalidatePath(`/batches/${batchId}`);
+  revalidatePath("/modules");
   revalidatePath("/profile");
   return { success: true };
 }

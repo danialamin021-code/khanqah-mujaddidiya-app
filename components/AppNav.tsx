@@ -9,6 +9,7 @@ import { useState } from "react";
 import { Menu, type LucideIcon } from "lucide-react";
 import HamburgerMenu from "./HamburgerMenu";
 import RoleSwitcher from "./RoleSwitcher";
+import NotificationBell from "./NotificationBell";
 import { getBottomNavForActiveRole } from "@/lib/constants/nav";
 
 import { NAV_LOGO } from "@/lib/constants/sheikh";
@@ -90,6 +91,7 @@ function AppNavInner() {
                 onSwitch={setActiveRole}
               />
             )}
+            {user && <NotificationBell />}
             <Link
               href="/bayat"
               className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg bg-[var(--muted-gold)] px-3 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-[var(--gold-hover)] sm:min-w-0 sm:px-4"
